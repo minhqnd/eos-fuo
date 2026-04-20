@@ -278,12 +278,12 @@ function EOSContent() {
             <section className="win-panel mx-auto flex h-full w-full flex-col">
                 {isReviewMode && (
                     <div className="win-sunken absolute top-0 right-0 z-30 w-[220px] p-1.5 text-[10px] leading-[1.35] text-[#2f2f2f]">
-                        <div className="mb-1 font-bold text-[#2e8f2f]">Review guide</div>
+                        <div className="mb-1 font-bold text-[#2e8f2f]">Hướng dẫn dùng chế độ ôn tập</div>
                         <ul className="space-y-[2px] pl-3">
-                            <li>← / → : Previous / Next question</li>
-                            <li>Space: Show answer</li>
-                            <li>Click “Show answer” to reveal correct option(s)</li>
-                            <li>Green ✓ means correct answer</li>
+                            <li>← / → : Câu hỏi trước / sau</li>
+                            <li>Nút Cách: Hiển thị đáp án</li>
+                            <li>Hoặc bấm “Show answer” để hiển thị đáp án đúng</li>
+                            <li>✓ xanh lá là câu trả lời chính xác</li>
                         </ul>
                     </div>
                 )}
@@ -432,7 +432,7 @@ function EOSContent() {
                                                 />
                                                 <span>{item}</span>
                                                 {isReviewMode && isCurrentAnswerRevealed && correctOptionsForCurrent.has(item) && (
-                                                    <span className="text-[12px] leading-none text-[#2e8f2f]">✓</span>
+                                                    <span className="text-[14px] font-black leading-none text-[#2e8f2f]">✓</span>
                                                 )}
                                             </label>
                                         ))}
