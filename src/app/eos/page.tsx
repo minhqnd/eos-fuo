@@ -3,6 +3,11 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
+import {
+    getEffectiveAnswerForQuestion,
+    normalizeExamName,
+    readAnswerOverrides,
+} from "@/lib/answer-overrides";
 
 interface Question {
     id: string;
@@ -17,10 +22,6 @@ interface QuestionData {
 }
 
 type DatabaseRoot = Record<string, Record<string, QuestionData[]>>;
-
-function normalizeExamName(value: string) {
-    return value.replace(/\s+/g, " ").trim().toLowerCase();
-}
 
 function extractCorrectOptions(answer: string | null) {
     if (!answer) return new Set<string>();
@@ -109,8 +110,14 @@ function EOSContent() {
                     throw new Error("Không tìm thấy đề đã chọn.");
                 }
 
+                const answerOverrides = readAnswerOverrides(selectedSubject, selectedExam.name);
+                const mergedQuestions = selectedExam.questions.map((question) => ({
+                    ...question,
+                    answer: getEffectiveAnswerForQuestion(question, answerOverrides),
+                }));
+
                 setExamName(selectedExam.name);
-                setQuestions(selectedExam.questions);
+                setQuestions(mergedQuestions);
                 setCurrentIndex(0);
                 setAnswers({});
                 setConfirmedAnswers({});

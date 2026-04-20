@@ -2,7 +2,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { countMissingAnswersForQuestions, readAnswerOverrides } from "@/lib/answer-overrides";
 
 interface Question {
   id: string;
@@ -24,8 +26,16 @@ interface ExamItem {
   exam: QuestionData;
 }
 
+interface MissingAnswerPromptState {
+  missingCount: number;
+  totalQuestions: number;
+  targetHref: string;
+  answerEditorHref: string;
+}
+
 export default function Home() {
   const MIN_QUESTION_COUNT = 20;
+  const router = useRouter();
 
   const [exams, setExams] = useState<ExamItem[]>([]);
   const [search, setSearch] = useState("");
@@ -33,6 +43,7 @@ export default function Home() {
   const [questionCountFilter, setQuestionCountFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [missingAnswerPrompt, setMissingAnswerPrompt] = useState<MissingAnswerPromptState | null>(null);
 
   useEffect(() => {
     fetch("/db_final.json")
@@ -119,6 +130,35 @@ export default function Home() {
     ];
   }, [MIN_QUESTION_COUNT, exams]);
 
+  const getExamHref = (subjectCode: string, examName: string) => {
+    return `/eos?subject=${encodeURIComponent(subjectCode)}&exam=${encodeURIComponent(examName)}`;
+  };
+
+  const getAnswerEditorHref = (subjectCode: string, examName: string) => {
+    return `/answer-editor?subject=${encodeURIComponent(subjectCode)}&exam=${encodeURIComponent(examName)}`;
+  };
+
+  const handleStartExam = (subjectCode: string, exam: QuestionData, mode?: "review") => {
+    const overrides = readAnswerOverrides(subjectCode, exam.name);
+    const missingCount = countMissingAnswersForQuestions(exam.questions, overrides);
+    const targetHref = mode === "review"
+      ? `${getExamHref(subjectCode, exam.name)}&mode=review`
+      : getExamHref(subjectCode, exam.name);
+    const answerEditorHref = getAnswerEditorHref(subjectCode, exam.name);
+
+    if (missingCount > 0) {
+      setMissingAnswerPrompt({
+        missingCount,
+        totalQuestions: exam.questions.length,
+        targetHref,
+        answerEditorHref,
+      });
+      return;
+    }
+
+    router.push(targetHref);
+  };
+
   return (
     <main className="min-h-screen px-4 py-6 text-slate-800 md:px-8">
       <section className="mx-auto max-w-7xl space-y-6">
@@ -129,10 +169,6 @@ export default function Home() {
                 FUO Exam Hub
               </p>
               <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Chọn đề thi để bắt đầu làm bài</h1>
-              {/* <p className="max-w-2xl text-sm text-slate-600 md:text-base">
-                Giao diện này tối ưu cho việc duyệt nhanh đề, lọc theo môn và chuyển ngay sang trang làm bài
-                <code className="rounded bg-slate-100 px-1 py-0.5"> /eos</code>.
-              </p> */}
             </div>
 
             <div className="grid w-full max-w-xs grid-cols-2 gap-3 text-sm">
@@ -197,8 +233,7 @@ export default function Home() {
         {!loading && !error && (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredExams.map(({ id, subjectCode, exam }) => {
-              const href = `/eos?subject=${encodeURIComponent(subjectCode)}&exam=${encodeURIComponent(exam.name)}`;
-              const reviewHref = `${href}&mode=review`;
+              const answerEditorHref = getAnswerEditorHref(subjectCode, exam.name);
 
               return (
                 <article
@@ -206,10 +241,21 @@ export default function Home() {
                   className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <div className="mb-3 flex items-start justify-between gap-2">
-                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
-                      {subjectCode}
-                    </span>
-                    <span className="text-xs text-slate-500">{exam.questions.length} câu</span>
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
+                        {subjectCode}
+                      </span>
+                      <span className="rounded-full bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-500">
+                        {exam.questions.length} câu
+                      </span>
+                    </div>
+
+                    <Link
+                      href={answerEditorHref}
+                      className="inline-flex h-8 items-center rounded-lg border border-slate-300 bg-white px-2.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                    >
+                      Sửa đáp án
+                    </Link>
                   </div>
 
                   <h2 className="mb-3 line-clamp-2 min-h-12 text-base font-semibold leading-snug text-slate-900">
@@ -227,19 +273,21 @@ export default function Home() {
                     </a>
 
                     <div className="flex items-center gap-2">
-                      <Link
-                        href={reviewHref}
+                      <button
+                        type="button"
+                        onClick={() => handleStartExam(subjectCode, exam, "review")}
                         className="inline-flex h-9 items-center rounded-lg border border-emerald-300 bg-emerald-50 px-3 text-sm font-semibold text-emerald-700 shadow-sm transition hover:bg-emerald-100"
                       >
                         Ôn tập
-                      </Link>
+                      </button>
 
-                      <Link
-                        href={href}
+                      <button
+                        type="button"
+                        onClick={() => handleStartExam(subjectCode, exam)}
                         className="inline-flex h-9 items-center rounded-lg bg-indigo-600 px-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500"
                       >
                         Vào làm bài
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </article>
@@ -251,6 +299,64 @@ export default function Home() {
         {!loading && !error && filteredExams.length === 0 && (
           <div className="rounded-xl border border-slate-200 bg-white p-7 text-center text-sm text-slate-600">
             Không tìm thấy đề phù hợp. Thử đổi từ khóa hoặc bỏ bộ lọc môn nhé.
+          </div>
+        )}
+
+        {missingAnswerPrompt && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 p-4">
+            <div className="relative w-full max-w-2xl rounded-3xl border border-slate-200 bg-white shadow-2xl">
+              {/* <button
+                type="button"
+                onClick={() => setMissingAnswerPrompt(null)}
+                className="absolute top-4 right-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white text-lg leading-none text-slate-500 transition hover:bg-slate-50 hover:text-slate-700"
+                aria-label="Đóng popup"
+              >
+                ×
+              </button> */}
+
+              <div className="space-y-5 p-6 md:p-8">
+                <h3 className="text-2xl font-semibold text-slate-700">
+                  Đề này còn thiếu {missingAnswerPrompt.missingCount}/{missingAnswerPrompt.totalQuestions} đáp án.
+                </h3>
+                <p className="text-xl text-slate-600">
+                  Bạn có muốn mở trang <b>Sửa đáp án</b> để bổ sung trước không?
+                </p>
+              </div>
+
+              <div className="flex flex-wrap justify-end gap-3 border-t border-slate-200 px-6 py-4 md:px-8">
+                <button
+                  type="button"
+                  onClick={() => setMissingAnswerPrompt(null)}
+                  className="inline-flex h-10 items-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                  Đóng
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const targetHref = missingAnswerPrompt.targetHref;
+                    setMissingAnswerPrompt(null);
+                    router.push(targetHref);
+                  }}
+                  className="inline-flex h-10 items-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                  Vẫn vào đề
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const answerEditorHref = missingAnswerPrompt.answerEditorHref;
+                    setMissingAnswerPrompt(null);
+                    router.push(answerEditorHref);
+                  }}
+                  className="inline-flex h-10 items-center rounded-xl bg-indigo-600 px-4 text-sm font-semibold text-white transition hover:bg-indigo-500"
+                >
+                  Mở trang Sửa đáp án
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </section>
