@@ -31,6 +31,7 @@ interface MissingAnswerPromptState {
   totalQuestions: number;
   targetHref: string;
   answerEditorHref: string;
+  shouldEnterFullscreen: boolean;
 }
 
 export default function Home() {
@@ -44,6 +45,15 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [missingAnswerPrompt, setMissingAnswerPrompt] = useState<MissingAnswerPromptState | null>(null);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (!document.fullscreenElement || !document.exitFullscreen) return;
+
+    void document.exitFullscreen().catch(() => {
+      // Ignore exit fullscreen errors
+    });
+  }, []);
 
   useEffect(() => {
     fetch("/db_final.json")
@@ -138,9 +148,32 @@ export default function Home() {
     return `/answer-editor?subject=${encodeURIComponent(subjectCode)}&exam=${encodeURIComponent(examName)}`;
   };
 
+  const requestFullscreenIfNeeded = async () => {
+    if (typeof document === "undefined") return;
+    if (document.fullscreenElement) return;
+
+    const element = document.documentElement;
+    if (!element.requestFullscreen) return;
+
+    try {
+      await element.requestFullscreen();
+    } catch {
+      // Ignore fullscreen request errors (browser policy or user agent limitations)
+    }
+  };
+
+  const navigateToExam = async (href: string, shouldEnterFullscreen: boolean) => {
+    if (shouldEnterFullscreen) {
+      await requestFullscreenIfNeeded();
+    }
+
+    router.push(href);
+  };
+
   const handleStartExam = (subjectCode: string, exam: QuestionData, mode?: "review") => {
     const overrides = readAnswerOverrides(subjectCode, exam.name);
     const missingCount = countMissingAnswersForQuestions(exam.questions, overrides);
+    const shouldEnterFullscreen = mode !== "review";
     const targetHref = mode === "review"
       ? `${getExamHref(subjectCode, exam.name)}&mode=review`
       : getExamHref(subjectCode, exam.name);
@@ -152,11 +185,12 @@ export default function Home() {
         totalQuestions: exam.questions.length,
         targetHref,
         answerEditorHref,
+        shouldEnterFullscreen,
       });
       return;
     }
 
-    router.push(targetHref);
+    void navigateToExam(targetHref, shouldEnterFullscreen);
   };
 
   return (
@@ -286,7 +320,7 @@ export default function Home() {
                         onClick={() => handleStartExam(subjectCode, exam)}
                         className="inline-flex h-9 items-center rounded-lg bg-indigo-600 px-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500"
                       >
-                        Vào làm bài
+                        Thi thử
                       </button>
                     </div>
                   </div>
@@ -336,8 +370,9 @@ export default function Home() {
                   type="button"
                   onClick={() => {
                     const targetHref = missingAnswerPrompt.targetHref;
+                    const shouldEnterFullscreen = missingAnswerPrompt.shouldEnterFullscreen;
                     setMissingAnswerPrompt(null);
-                    router.push(targetHref);
+                    void navigateToExam(targetHref, shouldEnterFullscreen);
                   }}
                   className="inline-flex h-10 items-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                 >
