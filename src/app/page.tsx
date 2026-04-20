@@ -195,8 +195,8 @@ export default function Home() {
             ))}
           </div> */}
 
-          <div className="h-[calc(100%-24px)] p-0.5">
-            <div className="ml-24 mb-1 flex items-center gap-2 px-1 text-[12px] mt-2">
+          <div className="h-[calc(100%-20px)] p-0.5">
+            <div className="ml-22 mb-1 flex items-center gap-2 px-1 text-[12px] mt-4">
               <span className="font-bold text-[#3f9a34]">
                 There are 7 questions, and your progress of answering is
               </span>
@@ -204,18 +204,20 @@ export default function Home() {
             </div>
 
             <div className="grid h-[calc(100%-28px)] grid-cols-[86px_1fr] bg-white">
-              <aside className="px-2 pt-1.5 text-[12px]">
-                <div className="mb-2 font-semibold text-[#2e8f2f]">Answer</div>
-                <div className="space-y-2">
-                  {(["A", "B", "C", "D"] as const).map((item) => (
-                    <label key={item} className="flex items-center gap-1.5">
-                      <input type="checkbox" className="h-3.5 w-3.5" />
-                      <span>{item}</span>
-                    </label>
-                  ))}
+              <aside className="px-2 pt-1.5 text-[12px] flex flex-col items-center">
+                <div className="w-full">
+                  <div className="mb-2 font-semibold text-[#2e8f2f] text-center">Answer</div>
+                  <div className="space-y-3.5 flex flex-col items-center">
+                    {(["A", "B", "C", "D"] as const).map((item) => (
+                      <label key={item} className="flex w-8 items-center gap-1.5">
+                        <input type="checkbox" className="h-3.5 w-3.5" />
+                        <span>{item}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="mt-[98px] flex gap-1">
+                <div className="mt-[98px] flex gap-1 justify-center">
                   <button className="win-button h-5 w-10 text-[11px]">Back</button>
                   <button className="win-button h-5 w-10 text-[11px]">Next</button>
                 </div>
@@ -226,7 +228,7 @@ export default function Home() {
                   (Choose 1 answer)
                 </div> */}
 
-                <div className="win-main h-[calc(100%-22px)] overflow-auto p-1.5 text-[12px] leading-[1.35] text-[#353535]">
+                <div className="win-main h-full overflow-auto p-1.5 text-[12px] leading-[1.35] text-[#353535]">
                   {multipleChoiceLines.map((line, idx) => (
                     <div key={`${line}-${idx}`}>{line || <span>&nbsp;</span>}</div>
                   ))}
@@ -250,11 +252,11 @@ export default function Home() {
           </div>
 
           <div className="z-10 flex w-[300px] items-end justify-end gap-1.5 pb-0.5 text-[11px]">
-            <button className="win-button h-5 w-[70px]">Reconnect</button>
+            {/* <button className="win-button h-5 w-[70px]">Reconnect</button>
             <div className="win-combo h-5 w-[130px]">
               <span>FPTU-EXAMONLINE</span>
               <span className="win-combo-arrow">▾</span>
-            </div>
+            </div> */}
             <button className="win-button h-5 w-12">Exit</button>
           </div>
         </footer>
