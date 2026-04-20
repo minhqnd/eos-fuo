@@ -451,7 +451,7 @@ function EOSContent() {
                                         disabled={!hasCurrentAnswerKey}
                                         className="win-button-modern min-h-5 max-w-full px-1.5 py-0.5 text-center text-[10px] leading-tight whitespace-normal break-words disabled:cursor-not-allowed disabled:opacity-60"
                                     >
-                                         {!hasCurrentAnswerKey ? "No answer key" : isCurrentAnswerRevealed ? "Hide answer" : "Show answer"}
+                                        {!hasCurrentAnswerKey ? "No answer key" : isCurrentAnswerRevealed ? "Hide answer" : "Show answer"}
                                     </button>
                                 )}
                             </aside>

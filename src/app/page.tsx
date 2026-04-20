@@ -198,6 +198,7 @@ export default function Home() {
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredExams.map(({ id, subjectCode, exam }) => {
               const href = `/eos?subject=${encodeURIComponent(subjectCode)}&exam=${encodeURIComponent(exam.name)}`;
+              const reviewHref = `${href}&mode=review`;
 
               return (
                 <article
@@ -225,12 +226,21 @@ export default function Home() {
                       Xem nguồn ↗
                     </a>
 
-                    <Link
-                      href={href}
-                      className="inline-flex h-9 items-center rounded-lg bg-indigo-600 px-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500"
-                    >
-                      Vào làm bài
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={reviewHref}
+                        className="inline-flex h-9 items-center rounded-lg border border-emerald-300 bg-emerald-50 px-3 text-sm font-semibold text-emerald-700 shadow-sm transition hover:bg-emerald-100"
+                      >
+                        Ôn tập
+                      </Link>
+
+                      <Link
+                        href={href}
+                        className="inline-flex h-9 items-center rounded-lg bg-indigo-600 px-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500"
+                      >
+                        Vào làm bài
+                      </Link>
+                    </div>
                   </div>
                 </article>
               );
