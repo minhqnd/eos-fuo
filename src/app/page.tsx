@@ -19,7 +19,7 @@ export default function Home() {
     <main className="win-root h-screen overflow-hidden text-[12px]">
       <section className="win-panel mx-auto flex h-full w-full flex-col">
         <header className="relative pt-1 pb-0.5">
-          <div className="grid max-w-[840px] grid-cols-[1fr_auto] gap-x-6">
+          <div className="grid w-full grid-cols-[minmax(0,1fr)_360px] gap-x-4">
             {/* LEFT COLUMN */}
             <div className="relative">
               {/* Row 1: student text + Finish button */}
@@ -37,9 +37,9 @@ export default function Home() {
               <table className="mt-1 border-separate border-spacing-y-1.5 text-[12px] leading-tight">
                 <tbody>
                   <tr>
-                    <td className="pr-1 text-right">Server:</td>
+                    <td className="pr-1 text-right whitespace-nowrap">Server:</td>
                     <td className="pr-4"><b>Eng_EOS_1403</b></td>
-                    <td className="pr-1 text-right">Exam Code:</td>
+                    <td className="pr-1 text-right whitespace-nowrap">Exam Code:</td>
                     <td><b>1</b></td>
                     <td rowSpan={2} className="align-top">
                       <button className="win-dark-button -mt-5 h-10 w-[88px] shrink-0 text-[11px] leading-[1.08] text-black">
@@ -50,24 +50,24 @@ export default function Home() {
                     </td>
                   </tr>
                   <tr>
-                    <td className="pr-1 text-right">Duration:</td>
+                    <td className="pr-1 text-right whitespace-nowrap">Duration:</td>
                     <td className="pr-4"><b>20 minutes</b></td>
-                    <td className="pr-1 text-right">Student:</td>
+                    <td className="pr-1 text-right whitespace-nowrap">Student:</td>
                     <td><b>2</b></td>
                   </tr>
                   <tr>
-                    <td className="pr-1 text-right font-bold">Submit Code:</td>
-                    <td className="pr-4 py-[2px]"><Field/></td>
-                    <td className="pr-1 text-right">Open Code:</td>
-                    <td className="pr-4 py-[2px]"><Field/></td>
+                    <td className="pr-1 text-right font-bold whitespace-nowrap">Submit Code:</td>
+                    <td className="pr-4 py-[2px]"><Field /></td>
+                    <td className="pr-1 text-right whitespace-nowrap">Open Code:</td>
+                    <td className="pr-4 py-[2px]"><Field /></td>
                     <td>
                       <button className="win-button h-[22px] w-[90px] text-[11px]">Show Question</button>
                     </td>
                   </tr>
                   <tr>
-                    <td className="pr-1 text-right">Q mark:</td>
+                    <td className="pr-1 text-right whitespace-nowrap">Q mark:</td>
                     <td className="pr-4"><b>1</b></td>
-                    <td className="pr-1 text-right">Total Marks:</td>
+                    <td className="pr-1 text-right whitespace-nowrap">Total Marks:</td>
                     <td className="pr-4"><b>28.5</b></td>
                     <td>
                       <div className="flex items-center gap-1">
@@ -87,8 +87,8 @@ export default function Home() {
                   <tr>
                     <td />
                     <td />
-                    <td className="pt-[2px] pr-1 text-right">
-                      <b>Font:</b>
+                    <td className="pt-[2px] pr-1 text-right whitespace-nowrap">
+                      <span>Font:</span>
                     </td>
                     <td className="pr-2">
                       <div className="win-combo h-[20px] w-[120px] text-[11px]">
@@ -96,13 +96,14 @@ export default function Home() {
                         <span className="win-combo-arrow">▾</span>
                       </div>
                     </td>
-                    <td>
+                    <td className="relative">
                       <div className="flex items-center gap-1">
-                        <b>Size:</b>
+                        <span>Size:</span>
                         <div className="win-combo h-[20px] w-10 text-[11px]">
                           <span>10</span>
                           <span className="win-combo-arrow">▾</span>
                         </div>
+                        <span className="ml-3 whitespace-nowrap text-[#4c4c4c]">Time Left:</span>
                       </div>
                     </td>
                   </tr>
@@ -110,18 +111,24 @@ export default function Home() {
               </table>
             </div>
 
-            {/* RIGHT COLUMN: Avatar + 27648 + Ferrari */}
-            <div className="relative flex items-start gap-3">
-              {/* Avatar */}
-              <div className="relative mt-1 shrink-0">
-                <svg viewBox="0 0 24 24" className="h-12 w-12 fill-none stroke-[#c5c5c5] stroke-[1.2]">
-                  <circle cx="12" cy="8" r="3.8" />
-                  <path d="M4.8 21c2.2-4.5 5.4-6.8 7.2-6.8s5 2.3 7.2 6.8" />
-                </svg>
-                <span className="absolute right-[-2px] top-[3px] h-3 w-3 rounded-full bg-[#84d476]" />
+            {/* RIGHT COLUMN: avatar/time + 27648/Ferrari */}
+            <div className="relative flex items-start gap-8 pt-1 pl-1">
+              <div className="relative mt-[140px] shrink-0 leading-none">
+                <div className="absolute -top-[66px] left-2">
+                  <div className="relative">
+                    <svg viewBox="0 0 24 24" className="h-[76px] w-[76px] fill-none stroke-[#c5c5c5] stroke-[1.2]">
+                      <circle cx="12" cy="8" r="3.8" />
+                      <path d="M4.8 21c2.2-4.5 5.4-6.8 7.2-6.8s5 2.3 7.2 6.8" />
+                    </svg>
+                    <span className="absolute right-0 top-[8px] h-4 w-4 rounded-full bg-[#84d476]" />
+                  </div>
+                </div>
+
+                <span className="pointer-events-none whitespace-nowrap text-[54px] leading-[0.82] font-medium tracking-tight text-[#557e96]">
+                  19:36
+                </span>
               </div>
 
-              {/* 27648 + Ferrari stacked */}
               <div className="flex shrink-0 flex-col items-center">
                 <div className="text-[46px] leading-none font-semibold text-[#2f2f2f]">27648</div>
                 <svg viewBox="0 0 120 120" className="h-[72px] w-[72px]">
@@ -135,10 +142,6 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pointer-events-none absolute left-[500px] top-[82px] flex items-end gap-2 whitespace-nowrap">
-            <b className="mb-[8px] text-[13px] leading-none text-[#4c4c4c]">Time Left:</b>
-            <span className="text-[54px] leading-[0.82] font-medium tracking-tight text-[#557e96]">19:36</span>
-          </div>
         </header>
 
         <div className="mx-1.5 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-[#f6f6f6]">
