@@ -19,7 +19,7 @@ export default function Home() {
     <main className="win-root h-screen overflow-hidden text-[12px]">
       <section className="win-panel mx-auto flex h-full w-full flex-col">
         <header className="relative pt-1 pb-0.5">
-          <div className="grid w-full grid-cols-[minmax(0,1fr)_360px] gap-x-4">
+          <div className="grid max-w-[900px] grid-cols-[1fr_300px] gap-x-4">
             {/* LEFT COLUMN */}
             <div className="relative">
               {/* Row 1: student text + Finish button */}
@@ -112,15 +112,15 @@ export default function Home() {
             </div>
 
             {/* RIGHT COLUMN: avatar/time + 27648/Ferrari */}
-            <div className="relative flex items-start gap-8 pt-1 pl-1">
-              <div className="relative mt-[140px] shrink-0 leading-none">
-                <div className="absolute -top-[66px] left-2">
+            <div className="relative -ml-6 flex items-start gap-7 pt-1 pl-1">
+              <div className="relative -ml-6 mt-[108px] flex shrink-0 flex-col items-center leading-none">
+                <div className="absolute -top-[90px]">
                   <div className="relative">
-                    <svg viewBox="0 0 24 24" className="h-[76px] w-[76px] fill-none stroke-[#c5c5c5] stroke-[1.2]">
+                    <svg viewBox="0 0 24 24" className="h-[84px] w-[84px] fill-none stroke-[#c5c5c5] stroke-[1.2]">
                       <circle cx="12" cy="8" r="3.8" />
                       <path d="M4.8 21c2.2-4.5 5.4-6.8 7.2-6.8s5 2.3 7.2 6.8" />
                     </svg>
-                    <span className="absolute right-0 top-[8px] h-4 w-4 rounded-full bg-[#84d476]" />
+                    <span className="absolute right-[2px] top-[10px] h-4.5 w-4.5 rounded-full bg-[#84d476]" />
                   </div>
                 </div>
 
