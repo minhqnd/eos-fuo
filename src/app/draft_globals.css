@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+:root {
+  --background: #e9e9e9;
+  --foreground: #222222;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Segoe UI", Tahoma, Arial, sans-serif;
+  --font-mono: "Consolas", "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Tahoma, Arial, "Microsoft Sans Serif", "MS Sans Serif", sans-serif;
+  margin: 0;
+  -webkit-font-smoothing: none;
+  text-rendering: optimizeSpeed;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(73, 126, 255, 0.25);
+}
+
+.win-root {
+  background: #e9e9e9;
+}
+
+.win-panel {
+  background: #efefef;
+  border: 1px solid #d7d7d7;
+}
+
+.win-raised {
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #9a9a9a;
+  border-bottom: 1px solid #9a9a9a;
+  background: #efefef;
+}
+
+.win-sunken {
+  border-top: 1px solid #9f9f9f;
+  border-left: 1px solid #9f9f9f;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  background: #ffffff;
+}
+
+.win-button {
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #8f8f8f;
+  border-bottom: 1px solid #8f8f8f;
+  background: #efefef;
+}
+
+.win-button:active {
+  border-top: 1px solid #8f8f8f;
+  border-left: 1px solid #8f8f8f;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+}
+
+.win-dark-button {
+  border-top: 1px solid #7f7f7f;
+  border-left: 1px solid #7f7f7f;
+  border-right: 1px solid #2b2b2b;
+  border-bottom: 1px solid #2b2b2b;
+  background: #4a4a4a;
+  color: #111;
+  font-weight: 700;
+}
+
+.win-yellow-button {
+  border-top: 1px solid #fff9bc;
+  border-left: 1px solid #fff9bc;
+  border-right: 1px solid #b8860b;
+  border-bottom: 1px solid #b8860b;
+  background: #f1b10a;
+}
+
+.win-select {
+  border-top: 1px solid #9f9f9f;
+  border-left: 1px solid #9f9f9f;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  background: #ffffff;
+}
+
+.win-combo {
+  border-top: 1px solid #9f9f9f;
+  border-left: 1px solid #9f9f9f;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 4px;
+  overflow: hidden;
+}
+
+.win-combo-arrow {
+  width: 16px;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid #b0b0b0;
+  border-top: 1px solid #ffffff;
+  background: #ececec;
+  color: #333;
+  font-size: 10px;
+}
+
+
+.win-selected {
+  background: #0b6ecf;
+  color: #ffffff;
+  text-align: left;
+  padding-left: 4px;
+}
+
+/* Windows XP Luna Style */
+.xp-titlebar {
+  background: linear-gradient(180deg, #0058ee 0%, #3590ff 4%, #288eff 6%, #1c81ff 8%, #1872ff 10%, #1062ff 14%, #0c59ff 18%, #084cff 22%, #0846fb 26%, #083ef7 30%, #0836f3 34%, #0830ef 40%, #0828eb 45%, #0820e7 50%, #0818e3 55%, #0810df 60%, #0808db 65%, #0800d7 70%, #0800d5 75%, #0000d1 80%, #0000cd 85%, #0000c9 90%, #0000c5 95%, #0000c1 100%);
+  padding: 3px 5px 3px 3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px #000000;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.xp-button-container {
+  display: flex;
+  gap: 2px;
+}
+
+.xp-button {
+  width: 21px;
+  height: 21px;
+  border-radius: 3px;
+  border: 1px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: inset 1px 1px 1px rgba(255,255,255,0.4), 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+.xp-button-min, .xp-button-max {
+  background: linear-gradient(135deg, #b8d6fb 0%, #215ed1 100%);
+}
+
+.xp-button-close {
+  background: linear-gradient(135deg, #f7947b 0%, #c82808 100%);
+}
+
+.xp-button:hover {
+  filter: brightness(1.1);
+}
+
+.xp-button:active {
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
+  transform: translate(1px, 1px);
+}
+
+.xp-icon-close {
+  color: white;
+  font-family: Arial;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.xp-icon-min {
+  width: 8px;
+  height: 2px;
+  background: white;
+  margin-top: 10px;
+}
+
+.xp-icon-max {
+  width: 10px;
+  height: 8px;
+  border: 2px solid white;
+  border-top-width: 3px;
+}
+
+@keyframes winGlow {
+  0% {
+    transform: translateX(-100%) translateZ(0);
+    -webkit-transform: translateX(-100%) translateZ(0);
+  }
+
+  100% {
+    transform: translateX(100%) translateZ(0);
+    -webkit-transform: translateX(100%) translateZ(0);
+  }
+}
+
+.win-progress-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: block;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+  animation: winGlow 2.5s infinite linear;
+  -webkit-animation: winGlow 2.5s infinite linear;
+  will-change: transform;
+}
