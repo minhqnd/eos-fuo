@@ -114,7 +114,7 @@ export default function Home() {
             </div>
 
             {/* RIGHT COLUMN: avatar/time + 27648/Ferrari */}
-            <div className="relative -ml-6 flex items-start gap-7 pt-1 pl-1">
+            <div className="relative -ml-[110px] -top-[10px] flex items-start gap-12 pt-1 pl-1">
               <div className="relative -ml-6 mt-[108px] flex shrink-0 flex-col items-center leading-none">
                 <div className="absolute -top-[90px]">
                   <div className="relative">
@@ -132,7 +132,7 @@ export default function Home() {
               </div>
 
               <div className="flex shrink-0 flex-col items-center">
-                <div className="text-[46px] leading-none font-semibold text-[#2f2f2f]">27648</div>
+                <div className="text-[46px] leading-none font-medium text-[#2f2f2f]">27648</div>
                 <svg viewBox="0 0 120 120" className="h-[72px] w-[72px]">
                   <path d="M60 4 L100 16 L96 58 C92 82 74 99 60 114 C46 99 28 82 24 58 L20 16 Z" fill="#f6c41d" stroke="#cc2f2f" strokeWidth="3" />
                   <path d="M60 14 C45 14 33 18 28 23 C31 35 41 41 60 41 C79 41 89 35 92 23 C87 18 75 14 60 14Z" fill="#d33030" />
