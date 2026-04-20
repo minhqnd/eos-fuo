@@ -68,10 +68,10 @@ export default function Home() {
                     <td className="pr-1 text-right whitespace-nowrap">Q mark:</td>
                     <td className="pr-4"><b>1</b></td>
                     <td className="pr-1 text-right whitespace-nowrap">Total Marks:</td>
-                    <td className="pr-4"><b>28.5</b></td>
-                    <td>
+                    <td colSpan={2}>
                       <div className="flex items-center gap-1">
-                        <span className="text-[#a0a0a0]">Vol:</span>
+                        <b className="mr-2">28.5</b>
+                        <span className="text-[#a0a0a0] ml-2">Vol:</span>
                         <div className="win-sunken flex h-[20px] w-[26px] items-center justify-center text-[11px] text-[#a0a0a0]">8</div>
                         <div className="flex flex-col gap-0">
                           <button className="win-button flex h-[12px] w-[22px] items-center justify-center p-0" aria-label="Volume up">
