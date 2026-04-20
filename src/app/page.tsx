@@ -231,7 +231,7 @@ export default function Home() {
 
         <div className="mx-3 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-white">
           <div className="flex h-full flex-col p-0.5">
-            <div className="ml-18 mb-1 flex items-center gap-2 px-1 text-[14px] mt-4 shrink-0">
+            <div className="ml-18 mb-1 flex items-center gap-2 px-1 text-[13px] mt-4 shrink-0">
               <span className="font-bold text-[#3f9a34]">
                 There are {questions.length} questions, and your progress of answering is
               </span>
@@ -244,7 +244,7 @@ export default function Home() {
             </div>
 
             <div className="grid min-h-0 flex-1 grid-cols-[86px_1fr] bg-white">
-              <aside className="px-2 pt-1.5 text-[14px] flex flex-col items-center">
+              <aside className="px-2 pt-1.5 text-[13px] flex flex-col items-center">
                 <div className="w-full">
                   <div className="mb-2 font-semibold text-[#2e8f2f] text-center">Answer</div>
                   <div className="space-y-3.5 flex flex-col items-center">
@@ -263,8 +263,8 @@ export default function Home() {
                 </div>
 
                 <div className="mt-18 mb-4 flex gap-1 justify-center">
-                  <button onClick={handleBack} className="win-button-modern h-5 w-9 text-[8px]">Back</button>
-                  <button onClick={handleNext} className="win-button-modern h-5 w-9 text-[8px]">Next</button>
+                  <button onClick={handleBack} className="win-button-modern h-5 w-9 text-[10px]">Back</button>
+                  <button onClick={handleNext} className="win-button-modern h-5 w-9 text-[10px]">Next</button>
                 </div>
               </aside>
 
