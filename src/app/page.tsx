@@ -18,78 +18,100 @@ export default function Home() {
   return (
     <main className="win-root h-screen overflow-hidden p-3 text-[12px]">
       <section className="win-panel mx-auto flex h-full w-full max-w-[1365px] flex-col">
-        <header className="px-3 pt-1 pb-0.5">
+        <header className="relative pt-1 pb-0.5">
           <div className="grid max-w-[780px] grid-cols-[1fr_auto] gap-x-6">
             {/* LEFT COLUMN */}
-            <div>
+            <div className="relative">
               {/* Row 1: student text + Finish button */}
-              <div className="flex items-start gap-4">
+              <div className="pl-4 flex items-center">
                 <div className="flex items-center text-[13px] leading-none font-bold text-[#2a2a2a]">
-                  03.02.20.26(STUDENT_L
+                  03.02.20.26(STUDENT)
                   <label className="ml-1 flex items-center font-normal">
                     <input type="checkbox" className="mr-1 h-3.5 w-3.5" />
                     I want to finish the exam.
                   </label>
                 </div>
-                <button className="win-dark-button h-10 w-[88px] shrink-0 text-[11px] leading-[1.08] text-black">
+                <button className="win-dark-button absolute right-0 top-0 h-10 w-[88px] shrink-0 text-[11px] leading-[1.08] text-black">
                   Finish
                   <br />
                   (Submit)
                 </button>
               </div>
 
-              {/* Info rows */}
-              <div className="ml-1 text-[12px] leading-tight">
-                <div className="flex gap-x-4">
-                  <div>Server: <b>Eng_EOS_1403</b></div>
-                  <div>Exam Code: <b>1</b></div>
-                </div>
-                <div className="flex gap-x-4">
-                  <div>Duration: <b>20 minutes</b></div>
-                  <div className="ml-2">Student: <b>2</b></div>
-                </div>
-                <div className="mt-[2px] flex items-center gap-x-4">
-                  <div className="flex items-center"><b>Submit Code:</b> <Field width={70} /></div>
-                  <div className="flex items-center"><b>Open Code:</b> <Field width={70} /></div>
-                  <button className="win-button h-[22px] w-[90px] text-[11px]">Show Question</button>
-                </div>
-                <div className="mt-[2px] flex items-center gap-x-4">
-                  <div><b>Q mark:</b> 1</div>
-                  <div className="ml-6"><b>Total Marks:</b> 28.5</div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-[#a0a0a0]">Vol:</span>
-                    <div className="win-sunken flex h-[20px] w-[26px] items-center justify-center text-[11px] text-[#a0a0a0]">8</div>
-                    <div className="flex flex-col gap-[1px]">
-                      <button className="win-button h-[9px] w-3 text-[7px] leading-none text-[#a0a0a0]">▲</button>
-                      <button className="win-button h-[9px] w-3 text-[7px] leading-none text-[#a0a0a0]">▼</button>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-[2px] flex items-center gap-x-2">
-                  <div className="flex items-center gap-1">
-                    <b>Font:</b>
-                    <div className="win-combo h-[20px] w-[120px] text-[11px]">
-                      <span className="truncate">Microsoft Sans Serif</span>
-                      <span className="win-combo-arrow">▾</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <b>Size:</b>
-                    <div className="win-combo h-[20px] w-10 text-[11px]">
-                      <span>10</span>
-                      <span className="win-combo-arrow">▾</span>
-                    </div>
-                  </div>
-                  <div className="ml-4 flex items-end gap-[6px]">
-                    <b className="mb-[8px] text-[13px] text-[#557e96]">Time Left:</b>
-                    <span className="text-[52px] font-bold leading-[0.85] tracking-tight text-[#557e96]">19:36</span>
-                  </div>
-                </div>
-              </div>
+              {/* Info table */}
+              <table className="mt-1 border-separate border-spacing-y-1.5 text-[12px] leading-tight">
+                <tbody>
+                  <tr>
+                    <td className="pr-1 text-right">Server:</td>
+                    <td className="pr-4"><b>Eng_EOS_1403</b></td>
+                    <td className="pr-1 text-right">Exam Code:</td>
+                    <td><b>1</b></td>
+                    <td />
+                  </tr>
+                  <tr>
+                    <td className="pr-1 text-right">Duration:</td>
+                    <td className="pr-4"><b>20 minutes</b></td>
+                    <td className="pr-1 text-right">Student:</td>
+                    <td><b>2</b></td>
+                    <td />
+                  </tr>
+                  <tr>
+                    <td className="pr-1 text-right font-bold">Submit Code:</td>
+                    <td className="s py-[2px]"><Field/></td>
+                    <td className="pr-1 text-right">Open Code:</td>
+                    <td className=" py-[2px]"><Field/></td>
+                    <td>
+                      <button className="win-button h-[22px] w-[90px] text-[11px]">Show Question</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="pr-1 text-right">Q mark:</td>
+                    <td className="pr-4"><b>1</b></td>
+                    <td className="pr-1 text-right">Total Marks:</td>
+                    <td className="pr-4"><b>28.5</b></td>
+                    <td>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[#a0a0a0]">Vol:</span>
+                        <div className="win-sunken flex h-[20px] w-[26px] items-center justify-center text-[11px] text-[#a0a0a0]">8</div>
+                        <div className="flex flex-col gap-0">
+                          <button className="win-button flex h-[12px] w-[22px] items-center justify-center p-0" aria-label="Volume up">
+                            <span className="h-0 w-0 border-l-[5px] border-r-[5px] border-b-[8px] border-l-transparent border-r-transparent border-b-[#9f9f9f]" />
+                          </button>
+                          <button className="win-button flex h-[12px] w-[22px] items-center justify-center p-0" aria-label="Volume down">
+                            <span className="h-0 w-0 border-l-[5px] border-r-[5px] border-t-[8px] border-l-transparent border-r-transparent border-t-[#9f9f9f]" />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td />
+                    <td />
+                    <td className="pt-[2px] pr-1 text-right">
+                      <b>Font:</b>
+                    </td>
+                    <td className="pr-2">
+                      <div className="win-combo h-[20px] w-[120px] text-[11px]">
+                        <span className="truncate">Microsoft Sans Serif</span>
+                        <span className="win-combo-arrow">▾</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-1">
+                        <b>Size:</b>
+                        <div className="win-combo h-[20px] w-10 text-[11px]">
+                          <span>10</span>
+                          <span className="win-combo-arrow">▾</span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             {/* RIGHT COLUMN: Avatar + 27648 + Ferrari */}
-            <div className="flex items-start gap-3">
+            <div className="relative flex items-start gap-3">
               {/* Avatar */}
               <div className="relative mt-1 shrink-0">
                 <svg viewBox="0 0 24 24" className="h-12 w-12 fill-none stroke-[#c5c5c5] stroke-[1.2]">
@@ -112,10 +134,15 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          <div className="pointer-events-none absolute left-[470px] top-[78px] flex items-end gap-2 whitespace-nowrap text-[#557e96]">
+            <b className="mb-[8px] text-[18px] leading-none">Time Left:</b>
+            <span className="text-[60px] leading-[0.8] font-medium tracking-tight">19:36</span>
+          </div>
         </header>
 
         <div className="mx-1.5 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-[#f6f6f6]">
-          <div className="flex h-6 items-end border-b border-[#d4d4d4] px-1 text-[11px]">
+          {/* <div className="flex h-6 items-end border-b border-[#d4d4d4] px-1 text-[11px]">
             {[
               "Reading",
               "Multiple Choices",
@@ -132,18 +159,18 @@ export default function Home() {
                 {tab}
               </div>
             ))}
-          </div>
+          </div> */}
 
           <div className="h-[calc(100%-24px)] p-0.5">
-            <div className="mb-1 flex items-center gap-2 px-1 text-[12px]">
+            <div className="ml-24 mb-1 flex items-center gap-2 px-1 text-[12px]">
               <span className="font-bold text-[#3f9a34]">
                 There are 7 questions, and your progress of answering is
               </span>
               <span className="win-sunken inline-block h-5 flex-1 bg-[#e8e8e8]" />
             </div>
 
-            <div className="grid h-[calc(100%-28px)] grid-cols-[86px_1fr] border border-[#bfbfbf] bg-white">
-              <aside className="border-r border-[#bdbdbd] bg-[#f3f3f3] px-2 pt-1.5 text-[12px]">
+            <div className="grid h-[calc(100%-28px)] grid-cols-[86px_1fr] bg-white">
+              <aside className="border-r border-[#bdbdbd] px-2 pt-1.5 text-[12px]">
                 <div className="mb-2 font-semibold text-[#2e8f2f]">Answer</div>
                 <div className="space-y-2">
                   {(["A", "B", "C", "D"] as const).map((item) => (
@@ -161,11 +188,14 @@ export default function Home() {
               </aside>
 
               <article className="min-w-0 px-1 py-0.5">
-                <div className="mb-0.5 border border-[#cfcfcf] bg-[#fbfbfb] px-1 py-[2px] text-[12px]">
+                {/* <div className="mb-0.5 border border-[#cfcfcf] bg-[#fbfbfb] px-1 py-[2px] text-[12px]">
                   (Choose 1 answer)
-                </div>
+                </div> */}
 
                 <div className="win-sunken h-[calc(100%-22px)] overflow-auto p-1.5 text-[12px] leading-[1.35] text-[#353535]">
+                  (Choose 1 answer)
+                  <br />
+                  <br />
                   {multipleChoiceLines.map((line, idx) => (
                     <div key={`${line}-${idx}`}>{line || <span>&nbsp;</span>}</div>
                   ))}
@@ -185,7 +215,7 @@ export default function Home() {
           </div>
 
           <div className="absolute inset-0 flex items-end justify-center pb-0.5">
-            <span className="text-[56px] leading-none tracking-[0.5px] text-[#d5a32a]">LAPTOP RUNNING</span>
+            <span className="text-[56px] leading-none tracking-[0.5px] text-[#d5a32a]">WEB RUNNING</span>
           </div>
 
           <div className="z-10 flex w-[300px] items-end justify-end gap-1.5 pb-0.5 text-[11px]">
