@@ -5,7 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
     getEffectiveAnswerForQuestion,
+    hasAnswerKey,
     normalizeExamName,
+    normalizeAnswerValue,
     readAnswerOverrides,
 } from "@/lib/answer-overrides";
 
@@ -22,6 +24,18 @@ interface QuestionData {
 }
 
 type DatabaseRoot = Record<string, Record<string, QuestionData[]>>;
+
+interface ExamResultSummary {
+    totalQuestions: number;
+    gradableQuestions: number;
+    missingKeyQuestions: number;
+    answeredQuestions: number;
+    unansweredQuestions: number;
+    correctAnswers: number;
+    incorrectAnswers: number;
+    answeredWithoutKey: number;
+    scorePercent: number;
+}
 
 function extractCorrectOptions(answer: string | null) {
     if (!answer) return new Set<string>();
@@ -64,8 +78,10 @@ function EOSContent() {
     const [answers, setAnswers] = useState<Record<number, string>>({});
     const [confirmedAnswers, setConfirmedAnswers] = useState<Record<number, string>>({});
     const [revealedAnswers, setRevealedAnswers] = useState<Record<number, boolean>>({});
+    const [isFinishConfirmed, setIsFinishConfirmed] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [resultSummary, setResultSummary] = useState<ExamResultSummary | null>(null);
 
     const selectedSubject = searchParams.get("subject") ?? "";
     const selectedExamName = searchParams.get("exam") ?? "";
@@ -122,7 +138,9 @@ function EOSContent() {
                 setAnswers({});
                 setConfirmedAnswers({});
                 setRevealedAnswers({});
+                setIsFinishConfirmed(false);
                 setTimeLeft(20 * 60);
+                setResultSummary(null);
             })
             .catch((err: unknown) => {
                 setError(err instanceof Error ? err.message : "Có lỗi khi tải đề thi.");
@@ -133,14 +151,14 @@ function EOSContent() {
     }, [selectedExamName, selectedSubject]);
 
     useEffect(() => {
-        if (timeLeft <= 0 || loading || error) return;
+        if (timeLeft <= 0 || loading || error || resultSummary) return;
 
         const timer = setInterval(() => {
             setTimeLeft((prev) => prev - 1);
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [error, loading, timeLeft]);
+    }, [error, loading, resultSummary, timeLeft]);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -170,6 +188,65 @@ function EOSContent() {
 
     const isCurrentAnswerRevealed = Boolean(revealedAnswers[currentIndex]);
     const hasCurrentAnswerKey = correctOptionsForCurrent.size > 0;
+
+    const buildResultSummary = (): ExamResultSummary => {
+        const totalQuestions = questions.length;
+        let missingKeyQuestions = 0;
+        let answeredQuestions = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let answeredWithoutKey = 0;
+
+        questions.forEach((question, index) => {
+            const selectedAnswer = normalizeAnswerValue(answers[index] ?? "");
+            const hasUserAnswer = selectedAnswer.length > 0;
+            const normalizedCorrectAnswer = normalizeAnswerValue(question.answer);
+            const hasKey = hasAnswerKey(normalizedCorrectAnswer);
+
+            if (hasUserAnswer) {
+                answeredQuestions += 1;
+            }
+
+            if (!hasKey) {
+                missingKeyQuestions += 1;
+                if (hasUserAnswer) {
+                    answeredWithoutKey += 1;
+                }
+                return;
+            }
+
+            if (!hasUserAnswer) {
+                return;
+            }
+
+            if (selectedAnswer === normalizedCorrectAnswer) {
+                correctAnswers += 1;
+            } else {
+                incorrectAnswers += 1;
+            }
+        });
+
+        const gradableQuestions = totalQuestions - missingKeyQuestions;
+        const unansweredQuestions = totalQuestions - answeredQuestions;
+        const scorePercent = gradableQuestions > 0 ? (correctAnswers / gradableQuestions) * 100 : 0;
+
+        return {
+            totalQuestions,
+            gradableQuestions,
+            missingKeyQuestions,
+            answeredQuestions,
+            unansweredQuestions,
+            correctAnswers,
+            incorrectAnswers,
+            answeredWithoutKey,
+            scorePercent,
+        };
+    };
+
+    const handleFinish = () => {
+        if (!questions.length || !isFinishConfirmed) return;
+        setResultSummary(buildResultSummary());
+    };
 
     const handleNext = () => {
         if (!questions.length) return;
@@ -309,7 +386,12 @@ function EOSContent() {
                                         </span>
                                     )} */}
                                     <label className="ml-1 flex items-center font-normal">
-                                        <input type="checkbox" className="mr-1 h-3.5 w-3.5" />
+                                        <input
+                                            type="checkbox"
+                                            className="mr-1 h-3.5 w-3.5"
+                                            checked={isFinishConfirmed}
+                                            onChange={(event) => setIsFinishConfirmed(event.target.checked)}
+                                        />
                                         I want to finish the exam.
                                     </label>
                                 </div>
@@ -325,7 +407,11 @@ function EOSContent() {
                                             <b>{examName || "N/A"}</b>
                                         </td>
                                         <td rowSpan={2} className="align-top">
-                                            <button className="win-dark-button -mt-5 h-10 w-[88px] shrink-0 text-[11px] leading-[1.08] text-black">
+                                            <button
+                                                onClick={handleFinish}
+                                                disabled={!isFinishConfirmed}
+                                                className="win-dark-button -mt-5 h-10 w-[88px] shrink-0 text-[11px] leading-[1.08] text-black"
+                                            >
                                                 Finish
                                                 <br />
                                                 (Submit)
@@ -484,10 +570,21 @@ function EOSContent() {
                 <footer className="relative flex items-end justify-between px-2.5 pb-1.5 pt-12">
                     <div className="z-10 w-[300px]">
                         <label className="mb-1 flex items-center gap-1 text-[12px] text-[#4a4a4a]">
-                            <input type="checkbox" className="h-3.5 w-3.5" />
+                            <input
+                                type="checkbox"
+                                className="h-3.5 w-3.5"
+                                checked={isFinishConfirmed}
+                                onChange={(event) => setIsFinishConfirmed(event.target.checked)}
+                            />
                             <span>I want to finish the exam.</span>
                         </label>
-                        <button className="win-yellow-button h-[22px] w-[80px] text-[11px] font-bold">Finish</button>
+                        <button
+                            onClick={handleFinish}
+                            disabled={!isFinishConfirmed}
+                            className="win-yellow-button h-[22px] w-[80px] text-[11px] font-bold disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            Finish
+                        </button>
                     </div>
 
                     <div className="pointer-events-none absolute inset-0 flex items-end justify-center pb-0.5">
@@ -499,6 +596,53 @@ function EOSContent() {
                         <button onClick={() => router.push("/")} className="win-button h-5 w-12">Exit</button>
                     </div>
                 </footer>
+
+                {resultSummary && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 p-4">
+                        <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl">
+                            <h2 className="mb-3 text-xl font-bold text-slate-800">Kết quả bài làm</h2>
+
+                            <div className="space-y-1.5 text-sm text-slate-700">
+                                <div>Tổng câu: <b>{resultSummary.totalQuestions}</b></div>
+                                <div>Đã trả lời: <b>{resultSummary.answeredQuestions}</b></div>
+                                <div>Chưa trả lời: <b>{resultSummary.unansweredQuestions}</b></div>
+                                <div>Đúng: <b className="text-emerald-700">{resultSummary.correctAnswers}</b></div>
+                                <div>Sai: <b className="text-rose-700">{resultSummary.incorrectAnswers}</b></div>
+                                <div>
+                                    Điểm (theo câu có đáp án key):
+                                    <b className="ml-1">{resultSummary.correctAnswers}/{resultSummary.gradableQuestions}</b>
+                                    <span className="ml-1">({resultSummary.scorePercent.toFixed(1)}%)</span>
+                                </div>
+                            </div>
+
+                            {resultSummary.missingKeyQuestions > 0 && (
+                                <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                                    Có <b>{resultSummary.missingKeyQuestions}</b> câu chưa có đáp án key nên không được tính điểm.
+                                    {resultSummary.answeredWithoutKey > 0 && (
+                                        <span> Bạn đã trả lời <b>{resultSummary.answeredWithoutKey}</b> câu trong số đó.</span>
+                                    )}
+                                </div>
+                            )}
+
+                            <div className="mt-4 flex flex-wrap justify-end gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setResultSummary(null)}
+                                    className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                                >
+                                    Đóng
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => router.push("/")}
+                                    className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+                                >
+                                    Về danh sách đề
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </section>
         </main>
     );
