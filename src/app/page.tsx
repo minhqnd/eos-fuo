@@ -10,8 +10,8 @@ const multipleChoiceLines = [
   "D. Buộc thôi học",
 ];
 
-function Field({ width = 90 }: { width?: number }) {
-  return <span className="win-sunken inline-block h-5 align-middle" style={{ width }} />;
+function Field({ width = "100%" }: { width?: number | string }) {
+  return <span className="win-sunken block h-5 align-middle" style={{ width }} />;
 }
 
 export default function Home() {
@@ -57,9 +57,9 @@ export default function Home() {
                   </tr>
                   <tr>
                     <td className="pr-1 text-right font-bold whitespace-nowrap">Submit Code:</td>
-                    <td className="pr-4 py-[2px]"><Field /></td>
+                    <td className="pr-1 py-[2px] w-[100px]"><Field /></td>
                     <td className="pr-1 text-right whitespace-nowrap">Open Code:</td>
-                    <td className="pr-4 py-[2px]"><Field /></td>
+                    <td className="pr-1 py-[2px] w-[100px]"><Field /></td>
                     <td>
                       <button className="win-button h-[22px] w-[90px] text-[11px]">Show Question</button>
                     </td>
