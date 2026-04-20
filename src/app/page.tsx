@@ -69,17 +69,19 @@ export default function Home() {
                     <td className="pr-4"><b>1</b></td>
                     <td className="pr-1 text-right whitespace-nowrap">Total Marks:</td>
                     <td colSpan={2}>
-                      <div className="flex items-center gap-1">
-                        <b className="mr-2">28.5</b>
-                        <span className="text-[#a0a0a0] ml-2">Vol:</span>
-                        <div className="win-sunken flex h-[20px] w-[26px] items-center justify-center text-[11px] text-[#a0a0a0]">8</div>
-                        <div className="flex flex-col gap-0">
-                          <button className="win-button flex h-[12px] w-[22px] items-center justify-center p-0" aria-label="Volume up">
-                            <span className="h-0 w-0 border-l-[5px] border-r-[5px] border-b-[8px] border-l-transparent border-r-transparent border-b-[#9f9f9f]" />
-                          </button>
-                          <button className="win-button flex h-[12px] w-[22px] items-center justify-center p-0" aria-label="Volume down">
-                            <span className="h-0 w-0 border-l-[5px] border-r-[5px] border-t-[8px] border-l-transparent border-r-transparent border-t-[#9f9f9f]" />
-                          </button>
+                      <div className="flex items-center">
+                        <b className="w-[32px]">28.5</b>
+                        <div className="flex items-center gap-1 ml-[11px]" id="vol-container">
+                          <span className="text-[#a0a0a0]">Vol:</span>
+                          <div className="win-sunken flex h-[20px] w-[26px] items-center justify-center text-[11px] text-[#a0a0a0]">8</div>
+                          <div className="flex flex-col gap-0">
+                            <button className="win-button flex h-[12px] w-[22px] items-center justify-center p-0" aria-label="Volume up">
+                              <span className="h-0 w-0 border-l-[5px] border-r-[5px] border-b-[8px] border-l-transparent border-r-transparent border-b-[#9f9f9f]" />
+                            </button>
+                            <button className="win-button flex h-[12px] w-[22px] items-center justify-center p-0" aria-label="Volume down">
+                              <span className="h-0 w-0 border-l-[5px] border-r-[5px] border-t-[8px] border-l-transparent border-r-transparent border-t-[#9f9f9f]" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -90,20 +92,20 @@ export default function Home() {
                     <td className="pt-[2px] pr-1 text-right whitespace-nowrap">
                       <span>Font:</span>
                     </td>
-                    <td className="pr-2">
-                      <div className="win-combo h-[20px] w-[120px] text-[11px]">
-                        <span className="truncate">Microsoft Sans Serif</span>
-                        <span className="win-combo-arrow">▾</span>
-                      </div>
-                    </td>
-                    <td className="relative">
-                      <div className="flex items-center gap-1">
-                        <span>Size:</span>
-                        <div className="win-combo h-[20px] w-10 text-[11px]">
-                          <span>10</span>
+                    <td colSpan={2}>
+                      <div className="flex items-center">
+                        <div className="win-combo h-[20px] w-[120px] text-[11px] -ml-[102px]">
+                          <span className="truncate">Microsoft Sans Serif</span>
                           <span className="win-combo-arrow">▾</span>
                         </div>
-                        <span className="ml-3 whitespace-nowrap text-[#4c4c4c]">Time Left:</span>
+                        <div className="flex items-center gap-1 ml-[25px]">
+                          <span>Size:</span>
+                          <div className="win-combo h-[20px] w-10 text-[11px]">
+                            <span>10</span>
+                            <span className="win-combo-arrow">▾</span>
+                          </div>
+                          <span className="ml-[18px] whitespace-nowrap text-[#4c4c4c]">Time Left:</span>
+                        </div>
                       </div>
                     </td>
                   </tr>
