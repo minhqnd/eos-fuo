@@ -73,6 +73,7 @@ select {
   background: #3f9a34;
   position: relative;
   overflow: hidden;
+  transition: width 0.3s ease-in-out;
 }
 
 .win-progress-bar::after {
@@ -81,22 +82,22 @@ select {
   top: 0;
   left: 0;
   height: 100%;
-  width: 50%;
+  width: 100px;
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0.4) 50%,
     rgba(255, 255, 255, 0) 100%
   );
-  animation: win-progress-shine 1.8s infinite linear;
+  animation: win-progress-shine 2s infinite linear;
 }
 
 @keyframes win-progress-shine {
   from {
-    transform: translateX(-100%);
+    left: -100px;
   }
   to {
-    transform: translateX(250%);
+    left: 100%;
   }
 }
 

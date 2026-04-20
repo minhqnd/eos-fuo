@@ -45,6 +45,7 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [examName, setExamName] = useState("");
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [confirmedAnswers, setConfirmedAnswers] = useState<Record<number, string>>({});
 
   useEffect(() => {
     fetch("/demo_question.json")
@@ -74,12 +75,28 @@ export default function Home() {
   const currentQuestion = questions[currentIndex];
 
   const handleNext = () => {
+    // Confirm the current answer before moving to the next question
+    if (answers[currentIndex]) {
+      setConfirmedAnswers((prev) => ({
+        ...prev,
+        [currentIndex]: answers[currentIndex],
+      }));
+    }
+
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
 
   const handleBack = () => {
+    // Confirm the current answer before moving back
+    if (answers[currentIndex]) {
+      setConfirmedAnswers((prev) => ({
+        ...prev,
+        [currentIndex]: answers[currentIndex],
+      }));
+    }
+
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
@@ -102,7 +119,7 @@ export default function Home() {
               {/* Row 1: student text + Finish button */}
               <div className="pl-4 flex items-center">
                 <div className="flex items-center text-[13px] leading-none font-bold text-[#2a2a2a]">
-                  03.02.20.26(STUDENT)
+                  03.04.05.06(STUDENT)
                   <label className="ml-1 flex items-center font-normal">
                     <input type="checkbox" className="mr-1 h-3.5 w-3.5" />
                     I want to finish the exam.
@@ -115,9 +132,9 @@ export default function Home() {
                 <tbody>
                   <tr>
                     <td className="pr-1 text-right whitespace-nowrap">Server:</td>
-                    <td className="pr-4"><b>Eng_EOS_1403</b></td>
+                    <td className="pr-4"><b>EOS_Hehe_6767</b></td>
                     <td className="pr-1 text-right whitespace-nowrap">Exam Code:</td>
-                    <td className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
+                    <td className="max-w-[110px] overflow-hidden text-ellipsis whitespace-nowrap">
                       <b>{examName || "1"}</b>
                     </td>
                     <td rowSpan={2} className="align-top">
@@ -170,7 +187,7 @@ export default function Home() {
                         <div className="ml-[25px]">
                           <WinSpin label="Size:" value="10" width="24px" />
                         </div>
-                        <span className="ml-[18px] whitespace-nowrap text-[#4c4c4c]">Time Left:</span>
+                        <span className="ml-[29px] whitespace-nowrap text-[#4c4c4c]">Time Left:</span>
                       </div>
                     </td>
                   </tr>
@@ -200,7 +217,7 @@ export default function Home() {
                 <div className="text-[34px]  leading-none font-medium text-[#2f2f2f]">27648</div>
                 <div className="relative h-[72px] w-[72px] mt-1 flex items-center justify-center mt-5">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/porsche.png" alt="car brand" className="max-h-full max-w-full object-contain" />
+                  <img src="/porsche.png" alt="img check" className="max-h-full max-w-full object-contain" />
                 </div>
               </div>
             </div>
@@ -208,16 +225,16 @@ export default function Home() {
 
         </header>
 
-        <div className="mx-1.5 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-white">
+        <div className="mx-3 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-white">
           <div className="flex h-full flex-col p-0.5">
-            <div className="ml-22 mb-1 flex items-center gap-2 px-1 text-[12px] mt-4 shrink-0">
+            <div className="ml-22 mb-1 flex items-center gap-2 px-1 text-[12px] mt-4 shrink-0 mr-1">
               <span className="font-bold text-[#3f9a34]">
                 There are {questions.length} questions, and your progress of answering is
               </span>
               <div className="win-progress-bg relative h-5 flex-1">
                 <div 
-                  className="win-progress-bar" 
-                  style={{ width: `${(Object.keys(answers).length / questions.length) * 100}%` }}
+                  className={`win-progress-bar ${Object.keys(confirmedAnswers).length === questions.length ? 'animation-none after:hidden' : ''}`} 
+                  style={{ width: `${(Object.keys(confirmedAnswers).length / questions.length) * 100}%` }}
                 />
               </div>
             </div>
@@ -241,13 +258,13 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="mt-auto mb-4 flex gap-1 justify-center">
+                <div className="mt-18 mb-4 flex gap-1 justify-center">
                   <button onClick={handleBack} disabled={currentIndex === 0} className="win-button h-5 w-10 text-[11px] disabled:opacity-50">Back</button>
                   <button onClick={handleNext} disabled={currentIndex === questions.length - 1} className="win-button h-5 w-10 text-[11px] disabled:opacity-50">Next</button>
                 </div>
               </aside>
 
-              <article className="min-h-0 px-1 py-0.5 relative">
+              <article className="min-h-0 px-1 py-0.5 mr-2 relative">
                 <div className="win-main absolute inset-0 overflow-y-auto overflow-x-hidden p-1.5 text-[12px] leading-[1.35] text-[#353535]">
                   {currentQuestion && (
                     <div className="w-full">
