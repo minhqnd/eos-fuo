@@ -592,7 +592,7 @@ function EOSContent() {
                     </div>
 
                     <div className="z-10 flex w-[300px] items-end justify-end gap-1.5 pb-0.5 text-[11px]">
-                        <button onClick={() => router.push("/")} className="win-button h-5 px-2">Exam List</button>
+                        {/* <button onClick={() => router.push("/")} className="win-button h-5 px-2">Exam List</button> */}
                         <button onClick={() => router.push("/")} className="win-button h-5 w-12">Exit</button>
                     </div>
                 </footer>
