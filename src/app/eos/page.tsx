@@ -301,7 +301,7 @@ function EOSContent() {
 
                 <div className="mx-3 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-white">
                     <div className="flex h-full flex-col p-0.5">
-                        <div className="ml-18 mb-1 mt-4 flex shrink-0 items-center gap-2 px-1 text-[13px]">
+                        <div className="ml-19 mr-1 mb-1 mt-4 flex shrink-0 items-center gap-2 px-1 text-[13px]">
                             <span className="font-bold text-[#3f9a34]">
                                 There are {questions.length} questions, and your progress of answering is
                             </span>
