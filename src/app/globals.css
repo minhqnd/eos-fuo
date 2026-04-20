@@ -204,14 +204,14 @@ select {
   border-top-width: 3px;
 }
 
-@keyframes winGlow {
-  0% {
-    transform: translateX(-100%);
-  }
+@-webkit-keyframes winGlow {
+  0% { -webkit-transform: translateX(-100%); }
+  100% { -webkit-transform: translateX(100%); }
+}
 
-  100% {
-    transform: translateX(100%);
-  }
+@keyframes winGlow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .win-progress-glow {
@@ -220,6 +220,9 @@ select {
   left: 0;
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  background: -webkit-linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.7), rgba(255,255,255,0));
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.7), rgba(255,255,255,0));
+  -webkit-animation: winGlow 2.5s infinite linear;
   animation: winGlow 2.5s infinite linear;
+  will-change: transform;
 }
