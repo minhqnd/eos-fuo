@@ -214,9 +214,9 @@ export default function Home() {
               <span className="font-bold text-[#3f9a34]">
                 There are {questions.length} questions, and your progress of answering is
               </span>
-              <div className="win-sunken relative h-6 flex-1 bg-[#e8e8e8]">
+              <div className="win-progress-bg relative h-5 flex-1">
                 <div 
-                  className="h-full bg-[#3f9a34]" 
+                  className="win-progress-bar" 
                   style={{ width: `${(Object.keys(answers).length / questions.length) * 100}%` }}
                 />
               </div>
