@@ -70,8 +70,9 @@ function WinSpin({ value, width = "40px", label }: { value: string | number; wid
 function EOSContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const EXAM_DURATION_MINUTES = 60;
 
-    const [timeLeft, setTimeLeft] = useState(20 * 60);
+    const [timeLeft, setTimeLeft] = useState(EXAM_DURATION_MINUTES * 60);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [examName, setExamName] = useState("");
@@ -139,7 +140,7 @@ function EOSContent() {
                 setConfirmedAnswers({});
                 setRevealedAnswers({});
                 setIsFinishConfirmed(false);
-                setTimeLeft(20 * 60);
+                setTimeLeft(EXAM_DURATION_MINUTES * 60);
                 setResultSummary(null);
             })
             .catch((err: unknown) => {
@@ -420,7 +421,7 @@ function EOSContent() {
                                     </tr>
                                     <tr>
                                         <td className="pr-1 text-right whitespace-nowrap">Duration:</td>
-                                        <td className="pr-4"><b>20 minutes</b></td>
+                                        <td className="pr-4"><b>{EXAM_DURATION_MINUTES} minutes</b></td>
                                         <td className="pr-1 text-right whitespace-nowrap">Student:</td>
                                         <td><b>2</b></td>
                                     </tr>
