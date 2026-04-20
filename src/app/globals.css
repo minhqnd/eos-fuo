@@ -127,9 +127,99 @@ select {
   font-size: 10px;
 }
 
+
 .win-selected {
   background: #0b6ecf;
   color: #ffffff;
   text-align: left;
   padding-left: 4px;
+}
+
+/* Windows XP Luna Style */
+.xp-titlebar {
+  background: linear-gradient(180deg, #0058ee 0%, #3590ff 4%, #288eff 6%, #1c81ff 8%, #1872ff 10%, #1062ff 14%, #0c59ff 18%, #084cff 22%, #0846fb 26%, #083ef7 30%, #0836f3 34%, #0830ef 40%, #0828eb 45%, #0820e7 50%, #0818e3 55%, #0810df 60%, #0808db 65%, #0800d7 70%, #0800d5 75%, #0000d1 80%, #0000cd 85%, #0000c9 90%, #0000c5 95%, #0000c1 100%);
+  padding: 3px 5px 3px 3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px #000000;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.xp-button-container {
+  display: flex;
+  gap: 2px;
+}
+
+.xp-button {
+  width: 21px;
+  height: 21px;
+  border-radius: 3px;
+  border: 1px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: inset 1px 1px 1px rgba(255,255,255,0.4), 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+.xp-button-min, .xp-button-max {
+  background: linear-gradient(135deg, #b8d6fb 0%, #215ed1 100%);
+}
+
+.xp-button-close {
+  background: linear-gradient(135deg, #f7947b 0%, #c82808 100%);
+}
+
+.xp-button:hover {
+  filter: brightness(1.1);
+}
+
+.xp-button:active {
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
+  transform: translate(1px, 1px);
+}
+
+.xp-icon-close {
+  color: white;
+  font-family: Arial;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.xp-icon-min {
+  width: 8px;
+  height: 2px;
+  background: white;
+  margin-top: 10px;
+}
+
+.xp-icon-max {
+  width: 10px;
+  height: 8px;
+  border: 2px solid white;
+  border-top-width: 3px;
+}
+
+@keyframes winGlow {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.win-progress-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  animation: winGlow 2.5s infinite linear;
 }
