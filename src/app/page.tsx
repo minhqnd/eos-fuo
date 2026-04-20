@@ -14,6 +14,27 @@ function Field({ width = "100%" }: { width?: number | string }) {
   return <span className="win-sunken block h-5 align-middle" style={{ width }} />;
 }
 
+function WinSpin({ value, width = "40px", label }: { value: string | number; width?: string; label?: string }) {
+  return (
+    <div className="flex items-center gap-1">
+      {label && <span>{label}</span>}
+      <div className="flex">
+        <div className="win-sunken flex h-[20px] items-center px-1 text-[11px]" style={{ width }}>
+          {value}
+        </div>
+        <div className="flex flex-col">
+          <button className="win-button flex h-[10px] w-4 items-center justify-center p-0" aria-label="Up">
+            <span className="h-0 w-0 border-l-[3px] border-r-[3px] border-b-[4px] border-l-transparent border-r-transparent border-b-[#333]" />
+          </button>
+          <button className="win-button flex h-[10px] w-4 items-center justify-center p-0" aria-label="Down">
+            <span className="h-0 w-0 border-l-[3px] border-r-[3px] border-t-[4px] border-l-transparent border-r-transparent border-t-[#333]" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   return (
     <main className="win-root h-screen overflow-hidden text-[12px]">
@@ -71,17 +92,8 @@ export default function Home() {
                     <td colSpan={2}>
                       <div className="flex items-center">
                         <b className="w-[32px]">28.5</b>
-                        <div className="flex items-center gap-1 ml-[11px]" id="vol-container">
-                          <span className="text-[#a0a0a0]">Vol:</span>
-                          <div className="win-sunken flex h-[20px] w-[26px] items-center justify-center text-[11px] text-[#a0a0a0]">8</div>
-                          <div className="flex flex-col gap-0">
-                            <button className="win-button flex h-[12px] w-[22px] items-center justify-center p-0" aria-label="Volume up">
-                              <span className="h-0 w-0 border-l-[5px] border-r-[5px] border-b-[8px] border-l-transparent border-r-transparent border-b-[#9f9f9f]" />
-                            </button>
-                            <button className="win-button flex h-[12px] w-[22px] items-center justify-center p-0" aria-label="Volume down">
-                              <span className="h-0 w-0 border-l-[5px] border-r-[5px] border-t-[8px] border-l-transparent border-r-transparent border-t-[#9f9f9f]" />
-                            </button>
-                          </div>
+                        <div className="ml-[11px]">
+                          <WinSpin label="Vol:" value="8" width="26px" />
                         </div>
                       </div>
                     </td>
@@ -94,18 +106,13 @@ export default function Home() {
                     </td>
                     <td colSpan={2}>
                       <div className="flex items-center">
-                        <div className="win-combo h-[20px] w-[120px] text-[11px] -ml-[102px]">
-                          <span className="truncate">Microsoft Sans Serif</span>
-                          <span className="win-combo-arrow">▾</span>
+                        <div className="-ml-[139px]">
+                          <WinSpin label="Font:" value="Microsoft Sans Serif" width="115px" />
                         </div>
-                        <div className="flex items-center gap-1 ml-[25px]">
-                          <span>Size:</span>
-                          <div className="win-combo h-[20px] w-10 text-[11px]">
-                            <span>10</span>
-                            <span className="win-combo-arrow">▾</span>
-                          </div>
-                          <span className="ml-[18px] whitespace-nowrap text-[#4c4c4c]">Time Left:</span>
+                        <div className="ml-[25px]">
+                          <WinSpin label="Size:" value="10" width="24px" />
                         </div>
+                        <span className="ml-[18px] whitespace-nowrap text-[#4c4c4c]">Time Left:</span>
                       </div>
                     </td>
                   </tr>
@@ -133,7 +140,7 @@ export default function Home() {
 
               <div className="relative flex shrink-0 flex-col items-center top-[10px]">
                 <div className="text-[34px]  leading-none font-medium text-[#2f2f2f]">27648</div>
-                <div className="relative h-[72px] w-[72px] mt-1 flex items-center justify-center">
+                <div className="relative h-[72px] w-[72px] mt-1 flex items-center justify-center mt-5">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/porsche.png" alt="car brand" className="max-h-full max-w-full object-contain" />
                 </div>
