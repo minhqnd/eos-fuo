@@ -5,6 +5,7 @@ import { getCurriculumSemester } from '../lib/curriculum';
 import { fetchExamData } from '../app/examActions';
 import ExamClient from './ExamClient';
 import type { ExamThread } from '../lib/data';
+import { useDraggable } from '../hooks/useDraggable';
 
 type ThreadData = { thread_name: string; thread_url: string; globalIndex: number; answerStatus: 'full' | 'partial' | 'none' };
 export type ExplorerTreeData = Record<string, Record<string, ThreadData[]>>;
@@ -34,6 +35,22 @@ export default function DesktopEnvironment({
   const [activeExamMeta, setActiveExamMeta] = useState<{ subject: string, globalIndex: number, isRemainder: boolean } | null>(null);
   const [activeExamData, setActiveExamData] = useState<ExamThread | null>(null);
   const [isExamLoading, setIsExamLoading] = useState(false);
+
+  // Window Management States
+  const [windowOrder, setWindowOrder] = useState<string[]>(['eos', 'groq', 'gemini']);
+  
+  const bringToFront = (id: string) => {
+    setWindowOrder(prev => [id, ...prev.filter(item => item !== id)]);
+  };
+
+  const getZIndex = (id: string) => {
+    const idx = windowOrder.indexOf(id);
+    return idx === -1 ? 10 : 30 - idx; // 30 is max, decreasing for background
+  };
+
+  const eosWindow = useDraggable({ x: 100, y: 50 }, isMaximized);
+  const groqWindow = useDraggable({ x: 150, y: 120 });
+  const geminiWindow = useDraggable({ x: 200, y: 160 });
 
   const handleOpenExam = async (subject: string, globalIndex: number, isRemainder: boolean) => {
     setActiveExamMeta({ subject, globalIndex, isRemainder });
@@ -217,18 +234,24 @@ export default function DesktopEnvironment({
       {/* EOS Window */}
       {isOpen && (
         <div 
-          className={`absolute transition-all duration-200 z-10 flex shadow-[2px_4px_16px_rgba(0,0,0,0.5)] ${
+          className={`absolute flex shadow-[2px_4px_16px_rgba(0,0,0,0.5)] ${
             isMaximized 
-              ? 'top-0 left-0 w-full h-[calc(100vh-30px)] translate-x-0 translate-y-0' 
-              : 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-[960px] h-[640px] max-w-[95vw] max-h-[85vh]'
-          } ${isMinimized ? 'scale-0 opacity-0 pointer-events-none origin-bottom' : 'scale-100 opacity-100'}`}
-          onClick={(e) => e.stopPropagation()}
+              ? 'top-0 left-0 w-full h-[calc(100vh-30px)] translate-x-0 translate-y-0 shadow-none transition-all duration-200' 
+              : 'w-[960px] h-[640px] max-w-[95vw] max-h-[85vh]'
+          } ${isMinimized ? 'scale-0 opacity-0 pointer-events-none origin-bottom transition-all duration-200' : 'scale-100 opacity-100'}`}
+          style={{ 
+            zIndex: getZIndex('eos'),
+            top: isMaximized ? 0 : `${eosWindow.pos.y}px`,
+            left: isMaximized ? 0 : `${eosWindow.pos.x}px`,
+          }}
+          onClick={(e) => { e.stopPropagation(); bringToFront('eos'); }}
         >
           <section className={`flex flex-col w-full h-full bg-[#efefef] border-[3px] border-[#0831d9] ${isMaximized ? '' : 'rounded-t-lg'}`}>
             {/* Title Bar like Windows XP */}
             <header 
-              className="xp-titlebar cursor-default select-none"
+              className="xp-titlebar select-none cursor-default"
               onDoubleClick={() => setIsMaximized(!isMaximized)}
+              onMouseDown={eosWindow.handleMouseDown}
             >
               <div className="flex items-center gap-1.5 pl-1 text-[12px]">
                 <img src="/favicon.ico" alt="" className="w-3.5 h-3.5" />
@@ -471,9 +494,20 @@ export default function DesktopEnvironment({
 
       {/* Groq Config Window */}
       {isGroqConfigOpen && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[400px] flex shadow-[2px_4px_16px_rgba(0,0,0,0.5)]">
+        <div 
+          className="absolute z-20 w-[400px] flex shadow-[2px_4px_16px_rgba(0,0,0,0.5)]"
+          style={{ 
+            zIndex: getZIndex('groq'),
+            top: `${groqWindow.pos.y}px`,
+            left: `${groqWindow.pos.x}px`,
+          }}
+          onClick={(e) => { e.stopPropagation(); bringToFront('groq'); }}
+        >
           <section className="flex flex-col w-full bg-[#efefef] border-[3px] border-[#0831d9] rounded-t-lg">
-            <header className="xp-titlebar cursor-default select-none h-[30px]">
+            <header 
+               className="xp-titlebar select-none cursor-default h-[30px]"
+               onMouseDown={groqWindow.handleMouseDown}
+            >
               <div className="flex items-center gap-1.5 pl-1 text-[12px]">
                 <span className="text-[14px]">🤖</span>
                 <span className="drop-shadow-[1px_1px_1px_rgba(0,0,0,0.7)]">Groq AI Configuration</span>
@@ -544,9 +578,20 @@ export default function DesktopEnvironment({
 
       {/* Gemini Config Window */}
       {isGeminiConfigOpen && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[400px] flex shadow-[2px_4px_16px_rgba(0,0,0,0.5)]">
+        <div 
+          className="absolute z-20 w-[400px] flex shadow-[2px_4px_16px_rgba(0,0,0,0.5)]"
+          style={{ 
+            zIndex: getZIndex('gemini'),
+            top: `${geminiWindow.pos.y}px`,
+            left: `${geminiWindow.pos.x}px`,
+          }}
+          onClick={(e) => { e.stopPropagation(); bringToFront('gemini'); }}
+        >
           <section className="flex flex-col w-full bg-[#efefef] border-[3px] border-[#0831d9] rounded-t-lg">
-            <header className="xp-titlebar cursor-default select-none h-[30px]">
+            <header 
+              className="xp-titlebar select-none cursor-default h-[30px]"
+              onMouseDown={geminiWindow.handleMouseDown}
+            >
               <div className="flex items-center gap-1.5 pl-1 text-[12px]">
                 <span className="text-[14px]">💎</span>
                 <span className="drop-shadow-[1px_1px_1px_rgba(0,0,0,0.7)]">Gemini AI Configuration</span>
