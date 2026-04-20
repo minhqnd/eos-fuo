@@ -22,6 +22,11 @@ function normalizeExamName(value: string) {
     return value.replace(/\s+/g, " ").trim().toLowerCase();
 }
 
+function extractCorrectOptions(answer: string | null) {
+    if (!answer) return new Set<string>();
+    return new Set((answer.toUpperCase().match(/[A-Z]/g) ?? []));
+}
+
 function Field({ width = "100%" }: { width?: number | string }) {
     return <span className="win-sunken block h-5 align-middle" style={{ width }} />;
 }
@@ -57,11 +62,14 @@ function EOSContent() {
     const [examName, setExamName] = useState("");
     const [answers, setAnswers] = useState<Record<number, string>>({});
     const [confirmedAnswers, setConfirmedAnswers] = useState<Record<number, string>>({});
+    const [revealedAnswers, setRevealedAnswers] = useState<Record<number, boolean>>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const selectedSubject = searchParams.get("subject") ?? "";
     const selectedExamName = searchParams.get("exam") ?? "";
+    const mode = (searchParams.get("mode") ?? "").toLowerCase();
+    const isReviewMode = ["review", "on-tap", "ontap", "practice"].includes(mode);
 
     useEffect(() => {
         if (!selectedSubject || !selectedExamName) {
@@ -106,6 +114,7 @@ function EOSContent() {
                 setCurrentIndex(0);
                 setAnswers({});
                 setConfirmedAnswers({});
+                setRevealedAnswers({});
                 setTimeLeft(20 * 60);
             })
             .catch((err: unknown) => {
@@ -138,6 +147,21 @@ function EOSContent() {
         if (questions.length === 0) return 0;
         return (Object.keys(confirmedAnswers).length / questions.length) * 100;
     }, [confirmedAnswers, questions.length]);
+
+    const correctOptionsForCurrent = useMemo(() => {
+        return extractCorrectOptions(currentQuestion?.answer ?? null);
+    }, [currentQuestion?.answer]);
+
+    const answerOptions = useMemo(() => {
+        const baseOptions = ["A", "B", "C", "D"];
+        const extraOptions = [...correctOptionsForCurrent]
+            .filter((option) => !baseOptions.includes(option))
+            .sort((a, b) => a.localeCompare(b));
+
+        return [...baseOptions, ...extraOptions];
+    }, [correctOptionsForCurrent]);
+
+    const isCurrentAnswerRevealed = Boolean(revealedAnswers[currentIndex]);
 
     const handleNext = () => {
         if (!questions.length) return;
@@ -180,6 +204,52 @@ function EOSContent() {
         }));
     };
 
+    const handleShowAnswer = () => {
+        if (!isReviewMode) return;
+
+        setRevealedAnswers((prev) => ({
+            ...prev,
+            [currentIndex]: true,
+        }));
+    };
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (loading || error || questions.length === 0) return;
+
+            const target = event.target as HTMLElement | null;
+            const tagName = target?.tagName?.toLowerCase();
+            const isFormElement = tagName === "input" || tagName === "textarea" || tagName === "select";
+
+            if (isFormElement || target?.isContentEditable) {
+                return;
+            }
+
+            if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                handleBack();
+                return;
+            }
+
+            if (event.key === "ArrowRight") {
+                event.preventDefault();
+                handleNext();
+                return;
+            }
+
+            if ((event.key === " " || event.code === "Space") && isReviewMode) {
+                event.preventDefault();
+                handleShowAnswer();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [error, isReviewMode, loading, questions.length, currentIndex, answers]);
+
     if (loading) {
         return (
             <main className="eos-root win-root min-h-screen p-5 text-[12px]">
@@ -206,12 +276,30 @@ function EOSContent() {
     return (
         <main className="eos-root win-root h-screen overflow-hidden text-[12px]">
             <section className="win-panel mx-auto flex h-full w-full flex-col">
+                                        {isReviewMode && (
+                            <div className="win-sunken absolute top-0 right-0 z-30 w-[220px] p-1.5 text-[10px] leading-[1.35] text-[#2f2f2f]">
+                                <div className="mb-1 font-bold text-[#2e8f2f]">Review guide</div>
+                                <ul className="space-y-[2px] pl-3">
+                                    <li>← / → : Previous / Next question</li>
+                                    <li>Space: Show answer</li>
+                                    <li>Click “Show answer” to reveal correct option(s)</li>
+                                    <li>Green ✓ means correct answer</li>
+                                </ul>
+                            </div>
+                        )}
+
                 <header className="relative pt-1 pb-0.5">
-                    <div className="grid max-w-[900px] grid-cols-[1fr_300px] gap-x-4">
+                    <div className="relative grid max-w-[900px] grid-cols-[1fr_300px] gap-x-4">
+
                         <div className="relative">
                             <div className="pl-4 flex items-center">
                                 <div className="flex items-center text-[13px] leading-none font-bold text-[#2a2a2a]">
                                     03.04.05.06(STUDENT)
+                                    {/* {isReviewMode && (
+                                        <span className="ml-2 rounded bg-[#e8f5e7] px-1.5 py-[1px] text-[10px] font-semibold text-[#2e8f2f]">
+                                            Review mode
+                                        </span>
+                                    )} */}
                                     <label className="ml-1 flex items-center font-normal">
                                         <input type="checkbox" className="mr-1 h-3.5 w-3.5" />
                                         I want to finish the exam.
@@ -334,8 +422,8 @@ function EOSContent() {
                                 <div className="w-full">
                                     <div className="mb-2 text-center font-semibold text-[#2e8f2f]">Answer</div>
                                     <div className="flex flex-col items-center space-y-3.5">
-                                        {(["A", "B", "C", "D"] as const).map((item) => (
-                                            <label key={item} className="flex w-8 items-center gap-1.5">
+                                        {answerOptions.map((item) => (
+                                            <label key={item} className="flex w-11 items-center gap-1.5">
                                                 <input
                                                     type="checkbox"
                                                     className="h-3.5 w-3.5"
@@ -343,15 +431,28 @@ function EOSContent() {
                                                     onChange={() => handleAnswerSelect(item)}
                                                 />
                                                 <span>{item}</span>
+                                                {isReviewMode && isCurrentAnswerRevealed && correctOptionsForCurrent.has(item) && (
+                                                    <span className="text-[12px] leading-none text-[#2e8f2f]">✓</span>
+                                                )}
                                             </label>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="mt-18 mb-4 flex justify-center gap-1">
+                                <div className="mt-18 mb-2 flex justify-center gap-1">
                                     <button onClick={handleBack} className="win-button-modern h-5 w-9 text-[10px]">Back</button>
                                     <button onClick={handleNext} className="win-button-modern h-5 w-9 text-[10px]">Next</button>
                                 </div>
+
+                                {isReviewMode && (
+                                    <button
+                                        onClick={handleShowAnswer}
+                                        disabled={isCurrentAnswerRevealed}
+                                        className="win-button-modern min-h-5 max-w-full px-1.5 py-0.5 text-center text-[10px] leading-tight whitespace-normal break-words disabled:cursor-not-allowed disabled:opacity-60"
+                                    >
+                                        {isCurrentAnswerRevealed ? "Answer shown" : "Show answer"}
+                                    </button>
+                                )}
                             </aside>
 
                             <article className="relative mr-2 min-h-0 px-1 py-0.5">
@@ -381,7 +482,7 @@ function EOSContent() {
                         <button className="win-yellow-button h-[22px] w-[80px] text-[11px] font-bold">Finish</button>
                     </div>
 
-                    <div className="absolute inset-0 flex items-end justify-center pb-0.5">
+                    <div className="pointer-events-none absolute inset-0 flex items-end justify-center pb-0.5">
                         <span className="text-[42px] leading-none tracking-[0.5px] text-[#d5a32a]">WEB RUNNING</span>
                     </div>
 
