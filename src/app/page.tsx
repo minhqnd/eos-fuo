@@ -1,8 +1,15 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
 const multipleChoiceLines = [
+  "(Choose 1 answer)",
+  "",
   "Đối với thi Online, sinh viên sử dụng các phần mềm hay trang web khác với phần mềm thi do nhà trường",
   "quy định khi đang thi sẽ bị hình thức kỷ luật:",
   "",
   "A. Đình chỉ thi môn học",
+  "",
   "B. Cảnh cáo",
   "",
   "C. Đình chỉ thi một Học kỳ",
@@ -36,6 +43,24 @@ function WinSpin({ value, width = "40px", label }: { value: string | number; wid
 }
 
 export default function Home() {
+  const [timeLeft, setTimeLeft] = useState(20 * 60); // 20 minutes in seconds
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
   return (
     <main className="win-root h-screen overflow-hidden text-[12px]">
       <section className="win-panel mx-auto flex h-full w-full flex-col">
@@ -106,7 +131,7 @@ export default function Home() {
                     </td>
                     <td colSpan={2}>
                       <div className="flex items-center">
-                        <div className="-ml-[139px]">
+                        <div className="-ml-[145px]">
                           <WinSpin label="Font:" value="Microsoft Sans Serif" width="115px" />
                         </div>
                         <div className="ml-[25px]">
@@ -134,7 +159,7 @@ export default function Home() {
                 </div>
 
                 <span className="pointer-events-none whitespace-nowrap text-[54px] leading-[0.82] font-medium tracking-tight text-[#557e96]">
-                  19:36
+                  {formatTime(timeLeft)}
                 </span>
               </div>
 
@@ -150,7 +175,7 @@ export default function Home() {
 
         </header>
 
-        <div className="mx-1.5 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-[#f6f6f6]">
+        <div className="mx-1.5 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-white">
           {/* <div className="flex h-6 items-end border-b border-[#d4d4d4] px-1 text-[11px]">
             {[
               "Reading",
@@ -171,7 +196,7 @@ export default function Home() {
           </div> */}
 
           <div className="h-[calc(100%-24px)] p-0.5">
-            <div className="ml-24 mb-1 flex items-center gap-2 px-1 text-[12px]">
+            <div className="ml-24 mb-1 flex items-center gap-2 px-1 text-[12px] mt-2">
               <span className="font-bold text-[#3f9a34]">
                 There are 7 questions, and your progress of answering is
               </span>
@@ -179,7 +204,7 @@ export default function Home() {
             </div>
 
             <div className="grid h-[calc(100%-28px)] grid-cols-[86px_1fr] bg-white">
-              <aside className="border-r border-[#bdbdbd] px-2 pt-1.5 text-[12px]">
+              <aside className="px-2 pt-1.5 text-[12px]">
                 <div className="mb-2 font-semibold text-[#2e8f2f]">Answer</div>
                 <div className="space-y-2">
                   {(["A", "B", "C", "D"] as const).map((item) => (
@@ -202,9 +227,6 @@ export default function Home() {
                 </div> */}
 
                 <div className="win-sunken h-[calc(100%-22px)] overflow-auto p-1.5 text-[12px] leading-[1.35] text-[#353535]">
-                  (Choose 1 answer)
-                  <br />
-                  <br />
                   {multipleChoiceLines.map((line, idx) => (
                     <div key={`${line}-${idx}`}>{line || <span>&nbsp;</span>}</div>
                   ))}
@@ -214,7 +236,7 @@ export default function Home() {
           </div>
         </div>
 
-        <footer className="relative flex items-end justify-between px-2.5 pb-1.5 pt-1">
+        <footer className="relative flex items-end justify-between px-2.5 pb-1.5 pt-12">
           <div className="z-10 w-[300px]">
             <label className="mb-1 flex items-center gap-1 text-[12px] text-[#4a4a4a]">
               <input type="checkbox" className="h-3.5 w-3.5" />
@@ -224,7 +246,7 @@ export default function Home() {
           </div>
 
           <div className="absolute inset-0 flex items-end justify-center pb-0.5">
-            <span className="text-[56px] leading-none tracking-[0.5px] text-[#d5a32a]">WEB RUNNING</span>
+            <span className="text-[42px] leading-none tracking-[0.5px] text-[#d5a32a]">WEB RUNNING</span>
           </div>
 
           <div className="z-10 flex w-[300px] items-end justify-end gap-1.5 pb-0.5 text-[11px]">
