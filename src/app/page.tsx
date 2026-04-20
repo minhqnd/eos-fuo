@@ -16,10 +16,10 @@ function Field({ width = 90 }: { width?: number }) {
 
 export default function Home() {
   return (
-    <main className="win-root h-screen overflow-hidden p-3 text-[12px]">
-      <section className="win-panel mx-auto flex h-full w-full max-w-[1365px] flex-col">
+    <main className="win-root h-screen overflow-hidden text-[12px]">
+      <section className="win-panel mx-auto flex h-full w-full flex-col">
         <header className="relative pt-1 pb-0.5">
-          <div className="grid max-w-[780px] grid-cols-[1fr_auto] gap-x-6">
+          <div className="grid max-w-[840px] grid-cols-[1fr_auto] gap-x-6">
             {/* LEFT COLUMN */}
             <div className="relative">
               {/* Row 1: student text + Finish button */}
@@ -31,11 +31,6 @@ export default function Home() {
                     I want to finish the exam.
                   </label>
                 </div>
-                <button className="win-dark-button absolute right-0 top-0 h-10 w-[88px] shrink-0 text-[11px] leading-[1.08] text-black">
-                  Finish
-                  <br />
-                  (Submit)
-                </button>
               </div>
 
               {/* Info table */}
@@ -46,20 +41,25 @@ export default function Home() {
                     <td className="pr-4"><b>Eng_EOS_1403</b></td>
                     <td className="pr-1 text-right">Exam Code:</td>
                     <td><b>1</b></td>
-                    <td />
+                    <td rowSpan={2} className="align-top">
+                      <button className="win-dark-button -mt-5 h-10 w-[88px] shrink-0 text-[11px] leading-[1.08] text-black">
+                        Finish
+                        <br />
+                        (Submit)
+                      </button>
+                    </td>
                   </tr>
                   <tr>
                     <td className="pr-1 text-right">Duration:</td>
                     <td className="pr-4"><b>20 minutes</b></td>
                     <td className="pr-1 text-right">Student:</td>
                     <td><b>2</b></td>
-                    <td />
                   </tr>
                   <tr>
                     <td className="pr-1 text-right font-bold">Submit Code:</td>
-                    <td className="s py-[2px]"><Field/></td>
+                    <td className="pr-4 py-[2px]"><Field/></td>
                     <td className="pr-1 text-right">Open Code:</td>
-                    <td className=" py-[2px]"><Field/></td>
+                    <td className="pr-4 py-[2px]"><Field/></td>
                     <td>
                       <button className="win-button h-[22px] w-[90px] text-[11px]">Show Question</button>
                     </td>
@@ -135,9 +135,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pointer-events-none absolute left-[470px] top-[78px] flex items-end gap-2 whitespace-nowrap text-[#557e96]">
-            <b className="mb-[8px] text-[18px] leading-none">Time Left:</b>
-            <span className="text-[60px] leading-[0.8] font-medium tracking-tight">19:36</span>
+          <div className="pointer-events-none absolute left-[500px] top-[82px] flex items-end gap-2 whitespace-nowrap">
+            <b className="mb-[8px] text-[13px] leading-none text-[#4c4c4c]">Time Left:</b>
+            <span className="text-[54px] leading-[0.82] font-medium tracking-tight text-[#557e96]">19:36</span>
           </div>
         </header>
 
