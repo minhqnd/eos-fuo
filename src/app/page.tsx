@@ -25,9 +25,12 @@ interface ExamItem {
 }
 
 export default function Home() {
+  const MIN_QUESTION_COUNT = 20;
+
   const [exams, setExams] = useState<ExamItem[]>([]);
   const [search, setSearch] = useState("");
   const [subjectFilter, setSubjectFilter] = useState("all");
+  const [questionCountFilter, setQuestionCountFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +63,13 @@ export default function Home() {
           }
         }
 
-        setExams(flattened.sort((a, b) => a.subjectCode.localeCompare(b.subjectCode) || a.exam.name.localeCompare(b.exam.name)));
+        setExams(
+          [...flattened].sort((a, b) => {
+            const bySubjectDesc = b.subjectCode.localeCompare(a.subjectCode);
+            if (bySubjectDesc !== 0) return bySubjectDesc;
+            return b.id - a.id;
+          }),
+        );
       })
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : "Có lỗi khi tải đề thi.");
@@ -73,19 +82,42 @@ export default function Home() {
   const filteredExams = useMemo(() => {
     const keyword = search.trim().toLowerCase();
     return exams.filter(({ subjectCode, exam }) => {
+      const matchedMinQuestionCount = exam.questions.length >= MIN_QUESTION_COUNT;
       const matchedSubject = subjectFilter === "all" || subjectCode === subjectFilter;
+      const matchedQuestionCount =
+        questionCountFilter === "all" ||
+        exam.questions.length === Number(questionCountFilter);
       const matchedKeyword =
         keyword.length === 0 ||
         subjectCode.toLowerCase().includes(keyword) ||
         exam.name.toLowerCase().includes(keyword);
 
-      return matchedSubject && matchedKeyword;
+      return matchedMinQuestionCount && matchedSubject && matchedQuestionCount && matchedKeyword;
     });
-  }, [exams, search, subjectFilter]);
+  }, [MIN_QUESTION_COUNT, exams, search, subjectFilter, questionCountFilter]);
 
   const subjectOptions = useMemo(() => {
     return ["all", ...Array.from(new Set(exams.map((item) => item.subjectCode))).sort((a, b) => a.localeCompare(b))];
   }, [exams]);
+
+  const visibleExamsCount = useMemo(() => {
+    return exams.filter((item) => item.exam.questions.length >= MIN_QUESTION_COUNT).length;
+  }, [MIN_QUESTION_COUNT, exams]);
+
+  const questionCountOptions = useMemo(() => {
+    return [
+      "all",
+      ...Array.from(
+        new Set(
+          exams
+            .map((item) => item.exam.questions.length)
+            .filter((count) => count >= MIN_QUESTION_COUNT),
+        ),
+      )
+        .sort((a, b) => a - b)
+        .map(String),
+    ];
+  }, [MIN_QUESTION_COUNT, exams]);
 
   return (
     <main className="min-h-screen px-4 py-6 text-slate-800 md:px-8">
@@ -97,16 +129,16 @@ export default function Home() {
                 FUO Exam Hub
               </p>
               <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Chọn đề thi để bắt đầu làm bài</h1>
-              <p className="max-w-2xl text-sm text-slate-600 md:text-base">
+              {/* <p className="max-w-2xl text-sm text-slate-600 md:text-base">
                 Giao diện này tối ưu cho việc duyệt nhanh đề, lọc theo môn và chuyển ngay sang trang làm bài
                 <code className="rounded bg-slate-100 px-1 py-0.5"> /eos</code>.
-              </p>
+              </p> */}
             </div>
 
             <div className="grid w-full max-w-xs grid-cols-2 gap-3 text-sm">
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                <div className="text-slate-500">Tổng đề</div>
-                <div className="mt-1 text-xl font-bold">{exams.length}</div>
+                <div className="text-slate-500">Tổng đề (≥ {MIN_QUESTION_COUNT} câu)</div>
+                <div className="mt-1 text-xl font-bold">{visibleExamsCount}</div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <div className="text-slate-500">Đang hiển thị</div>
@@ -115,7 +147,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px]">
+          <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px_200px]">
             <label className="space-y-1.5">
               <span className="text-sm font-medium text-slate-700">Tìm nhanh</span>
               <input
@@ -136,6 +168,21 @@ export default function Home() {
                 {subjectOptions.map((subject) => (
                   <option key={subject} value={subject}>
                     {subject === "all" ? "Tất cả môn" : subject}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="space-y-1.5">
+              <span className="text-sm font-medium text-slate-700">Lọc theo số câu</span>
+              <select
+                value={questionCountFilter}
+                onChange={(e) => setQuestionCountFilter(e.target.value)}
+                className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring"
+              >
+                {questionCountOptions.map((count) => (
+                  <option key={count} value={count}>
+                    {count === "all" ? "Tất cả số câu" : `${count} câu`}
                   </option>
                 ))}
               </select>
