@@ -2,20 +2,17 @@
 
 import { useState, useEffect } from "react";
 
-const multipleChoiceLines = [
-  "(Choose 1 answer)",
-  "",
-  "Đối với thi Online, sinh viên sử dụng các phần mềm hay trang web khác với phần mềm thi do nhà trường",
-  "quy định khi đang thi sẽ bị hình thức kỷ luật:",
-  "",
-  "A. Đình chỉ thi môn học",
-  "",
-  "B. Cảnh cáo",
-  "",
-  "C. Đình chỉ thi một Học kỳ",
-  "",
-  "D. Buộc thôi học",
-];
+interface Question {
+  id: string;
+  image_url: string;
+  answer: string;
+}
+
+interface QuestionData {
+  thread_url: string;
+  name: string;
+  questions: Question[];
+}
 
 function Field({ width = "100%" }: { width?: number | string }) {
   return <span className="win-sunken block h-5 align-middle" style={{ width }} />;
@@ -44,6 +41,19 @@ function WinSpin({ value, width = "40px", label }: { value: string | number; wid
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState(20 * 60); // 20 minutes in seconds
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [examName, setExamName] = useState("");
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    fetch("/demo_question.json")
+      .then((res) => res.json())
+      .then((data: QuestionData) => {
+        setQuestions(data.questions);
+        setExamName(data.name);
+      });
+  }, []);
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -59,6 +69,27 @@ export default function Home() {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const currentQuestion = questions[currentIndex];
+
+  const handleNext = () => {
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const handleAnswerSelect = (option: string) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [currentIndex]: option,
+    }));
   };
 
   return (
@@ -86,7 +117,9 @@ export default function Home() {
                     <td className="pr-1 text-right whitespace-nowrap">Server:</td>
                     <td className="pr-4"><b>Eng_EOS_1403</b></td>
                     <td className="pr-1 text-right whitespace-nowrap">Exam Code:</td>
-                    <td><b>1</b></td>
+                    <td className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
+                      <b>{examName || "1"}</b>
+                    </td>
                     <td rowSpan={2} className="align-top">
                       <button className="win-dark-button -mt-5 h-10 w-[88px] shrink-0 text-[11px] leading-[1.08] text-black">
                         Finish
@@ -112,7 +145,7 @@ export default function Home() {
                   </tr>
                   <tr>
                     <td className="pr-1 text-right whitespace-nowrap">Q mark:</td>
-                    <td className="pr-4"><b>1</b></td>
+                    <td className="pr-4"><b>{(currentIndex + 1)}</b></td>
                     <td className="pr-1 text-right whitespace-nowrap">Total Marks:</td>
                     <td colSpan={2}>
                       <div className="flex items-center">
@@ -176,62 +209,56 @@ export default function Home() {
         </header>
 
         <div className="mx-1.5 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-white">
-          {/* <div className="flex h-6 items-end border-b border-[#d4d4d4] px-1 text-[11px]">
-            {[
-              "Reading",
-              "Multiple Choices",
-              "Indicate Mistake",
-              "Matching",
-              "Fill Blank",
-            ].map((tab, i) => (
-              <div
-                key={tab}
-                className={`mr-1 border border-[#c7c7c7] px-1 py-[2px] ${
-                  i === 1 ? "border-b-white bg-white" : "bg-[#ececec]"
-                }`}
-              >
-                {tab}
-              </div>
-            ))}
-          </div> */}
-
-          <div className="h-[calc(100%-20px)] p-0.5">
-            <div className="ml-22 mb-1 flex items-center gap-2 px-1 text-[12px] mt-4">
+          <div className="flex h-full flex-col p-0.5">
+            <div className="ml-22 mb-1 flex items-center gap-2 px-1 text-[12px] mt-4 shrink-0">
               <span className="font-bold text-[#3f9a34]">
-                There are 7 questions, and your progress of answering is
+                There are {questions.length} questions, and your progress of answering is
               </span>
-              <span className="win-sunken inline-block h-5 flex-1 bg-[#e8e8e8]" />
+              <div className="win-sunken relative h-6 flex-1 bg-[#e8e8e8]">
+                <div 
+                  className="h-full bg-[#3f9a34]" 
+                  style={{ width: `${(Object.keys(answers).length / questions.length) * 100}%` }}
+                />
+              </div>
             </div>
 
-            <div className="grid h-[calc(100%-28px)] grid-cols-[86px_1fr] bg-white">
+            <div className="grid min-h-0 flex-1 grid-cols-[86px_1fr] bg-white">
               <aside className="px-2 pt-1.5 text-[12px] flex flex-col items-center">
                 <div className="w-full">
                   <div className="mb-2 font-semibold text-[#2e8f2f] text-center">Answer</div>
                   <div className="space-y-3.5 flex flex-col items-center">
                     {(["A", "B", "C", "D"] as const).map((item) => (
                       <label key={item} className="flex w-8 items-center gap-1.5">
-                        <input type="checkbox" className="h-3.5 w-3.5" />
+                        <input
+                          type="checkbox"
+                          className="h-3.5 w-3.5"
+                          checked={answers[currentIndex] === item}
+                          onChange={() => handleAnswerSelect(item)}
+                        />
                         <span>{item}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                <div className="mt-[98px] flex gap-1 justify-center">
-                  <button className="win-button h-5 w-10 text-[11px]">Back</button>
-                  <button className="win-button h-5 w-10 text-[11px]">Next</button>
+                <div className="mt-auto mb-4 flex gap-1 justify-center">
+                  <button onClick={handleBack} disabled={currentIndex === 0} className="win-button h-5 w-10 text-[11px] disabled:opacity-50">Back</button>
+                  <button onClick={handleNext} disabled={currentIndex === questions.length - 1} className="win-button h-5 w-10 text-[11px] disabled:opacity-50">Next</button>
                 </div>
               </aside>
 
-              <article className="min-w-0 px-1 py-0.5">
-                {/* <div className="mb-0.5 border border-[#cfcfcf] bg-[#fbfbfb] px-1 py-[2px] text-[12px]">
-                  (Choose 1 answer)
-                </div> */}
-
-                <div className="win-main h-full overflow-auto p-1.5 text-[12px] leading-[1.35] text-[#353535]">
-                  {multipleChoiceLines.map((line, idx) => (
-                    <div key={`${line}-${idx}`}>{line || <span>&nbsp;</span>}</div>
-                  ))}
+              <article className="min-h-0 px-1 py-0.5 relative">
+                <div className="win-main absolute inset-0 overflow-y-auto overflow-x-hidden p-1.5 text-[12px] leading-[1.35] text-[#353535]">
+                  {currentQuestion && (
+                    <div className="w-full">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={currentQuestion.image_url}
+                        alt={`Question ${currentIndex + 1}`}
+                        className="block w-full h-auto"
+                      />
+                    </div>
+                  )}
                 </div>
               </article>
             </div>
