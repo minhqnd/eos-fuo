@@ -153,7 +153,7 @@ function EOSContent() {
     }, [currentQuestion?.answer]);
 
     const answerOptions = useMemo(() => {
-        const baseOptions = ["A", "B", "C", "D"];
+        const baseOptions = ["A", "B", "C", "D", "E"];
         const extraOptions = [...correctOptionsForCurrent]
             .filter((option) => !baseOptions.includes(option))
             .sort((a, b) => a.localeCompare(b));
@@ -162,6 +162,7 @@ function EOSContent() {
     }, [correctOptionsForCurrent]);
 
     const isCurrentAnswerRevealed = Boolean(revealedAnswers[currentIndex]);
+    const hasCurrentAnswerKey = correctOptionsForCurrent.size > 0;
 
     const handleNext = () => {
         if (!questions.length) return;
@@ -205,11 +206,11 @@ function EOSContent() {
     };
 
     const handleShowAnswer = () => {
-        if (!isReviewMode) return;
+        if (!isReviewMode || !hasCurrentAnswerKey) return;
 
         setRevealedAnswers((prev) => ({
             ...prev,
-            [currentIndex]: true,
+            [currentIndex]: !prev[currentIndex],
         }));
     };
 
@@ -281,8 +282,8 @@ function EOSContent() {
                         <div className="mb-1 font-bold text-[#2e8f2f]">Hướng dẫn dùng chế độ ôn tập</div>
                         <ul className="space-y-[2px] pl-3">
                             <li>← / → : Câu hỏi trước / sau</li>
-                            <li>Nút Cách: Hiển thị đáp án</li>
-                            <li>Hoặc bấm “Show answer” để hiển thị đáp án đúng</li>
+                            <li>Nút Cách: Hiện / ẩn đáp án đúng</li>
+                            <li>Hoặc bấm “Show answer / Hide answer”</li>
                             <li>✓ xanh lá là câu trả lời chính xác</li>
                         </ul>
                     </div>
@@ -447,10 +448,10 @@ function EOSContent() {
                                 {isReviewMode && (
                                     <button
                                         onClick={handleShowAnswer}
-                                        disabled={isCurrentAnswerRevealed}
+                                        disabled={!hasCurrentAnswerKey}
                                         className="win-button-modern min-h-5 max-w-full px-1.5 py-0.5 text-center text-[10px] leading-tight whitespace-normal break-words disabled:cursor-not-allowed disabled:opacity-60"
                                     >
-                                        {isCurrentAnswerRevealed ? "Answer shown" : "Show answer"}
+                                         {!hasCurrentAnswerKey ? "No answer key" : isCurrentAnswerRevealed ? "Hide answer" : "Show answer"}
                                     </button>
                                 )}
                             </aside>
