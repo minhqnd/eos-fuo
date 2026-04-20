@@ -253,11 +253,12 @@ function EOSContent() {
                                     </tr>
                                     <tr>
                                         <td className="pr-1 text-right whitespace-nowrap">Q mark:</td>
-                                        <td className="pr-4"><b>{currentIndex + 1}</b></td>
+                                        <td className="pr-4"><b>1</b></td>
+                                        {/* <td className="pr-4"><b>{currentIndex + 1}</b></td> */}
                                         <td className="pr-1 text-right whitespace-nowrap">Total Marks:</td>
                                         <td colSpan={2}>
                                             <div className="flex items-center">
-                                                <b className="w-[32px]">28.5</b>
+                                                <b className="w-[32px]">{questions.length}</b>
                                                 <div className="ml-[11px]">
                                                     <WinSpin label="Vol:" value="8" width="26px" />
                                                 </div>
