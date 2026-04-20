@@ -276,17 +276,17 @@ function EOSContent() {
     return (
         <main className="eos-root win-root h-screen overflow-hidden text-[12px]">
             <section className="win-panel mx-auto flex h-full w-full flex-col">
-                                        {isReviewMode && (
-                            <div className="win-sunken absolute top-0 right-0 z-30 w-[220px] p-1.5 text-[10px] leading-[1.35] text-[#2f2f2f]">
-                                <div className="mb-1 font-bold text-[#2e8f2f]">Review guide</div>
-                                <ul className="space-y-[2px] pl-3">
-                                    <li>← / → : Previous / Next question</li>
-                                    <li>Space: Show answer</li>
-                                    <li>Click “Show answer” to reveal correct option(s)</li>
-                                    <li>Green ✓ means correct answer</li>
-                                </ul>
-                            </div>
-                        )}
+                {isReviewMode && (
+                    <div className="win-sunken absolute top-0 right-0 z-30 w-[220px] p-1.5 text-[10px] leading-[1.35] text-[#2f2f2f]">
+                        <div className="mb-1 font-bold text-[#2e8f2f]">Review guide</div>
+                        <ul className="space-y-[2px] pl-3">
+                            <li>← / → : Previous / Next question</li>
+                            <li>Space: Show answer</li>
+                            <li>Click “Show answer” to reveal correct option(s)</li>
+                            <li>Green ✓ means correct answer</li>
+                        </ul>
+                    </div>
+                )}
 
                 <header className="relative pt-1 pb-0.5">
                     <div className="relative grid max-w-[900px] grid-cols-[1fr_300px] gap-x-4">
