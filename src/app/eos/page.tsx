@@ -18,6 +18,10 @@ interface QuestionData {
 
 type DatabaseRoot = Record<string, Record<string, QuestionData[]>>;
 
+function normalizeExamName(value: string) {
+    return value.replace(/\s+/g, " ").trim().toLowerCase();
+}
+
 function Field({ width = "100%" }: { width?: number | string }) {
     return <span className="win-sunken block h-5 align-middle" style={{ width }} />;
 }
@@ -78,9 +82,20 @@ function EOSContent() {
                 return res.json() as Promise<DatabaseRoot>;
             })
             .then((data) => {
-                const firstLayer = Object.values(data)[0];
-                const examsBySubject = firstLayer?.[selectedSubject] ?? [];
-                const selectedExam = examsBySubject.find((item) => item.name === selectedExamName);
+                const normalizedSelectedExamName = normalizeExamName(selectedExamName);
+                let selectedExam: QuestionData | undefined;
+
+                for (const semesterGroup of Object.values(data)) {
+                    const examsBySubject = semesterGroup?.[selectedSubject] ?? [];
+                    const found = examsBySubject.find(
+                        (item) => normalizeExamName(item.name) === normalizedSelectedExamName,
+                    );
+
+                    if (found) {
+                        selectedExam = found;
+                        break;
+                    }
+                }
 
                 if (!selectedExam) {
                     throw new Error("Không tìm thấy đề đã chọn.");
@@ -167,7 +182,7 @@ function EOSContent() {
 
     if (loading) {
         return (
-            <main className="win-root min-h-screen p-5 text-[12px]">
+            <main className="eos-root win-root min-h-screen p-5 text-[12px]">
                 <section className="win-panel mx-auto max-w-3xl p-4">
                     <div className="win-sunken p-3">Đang tải đề thi...</div>
                 </section>
@@ -177,7 +192,7 @@ function EOSContent() {
 
     if (error) {
         return (
-            <main className="win-root min-h-screen p-5 text-[12px]">
+            <main className="eos-root win-root min-h-screen p-5 text-[12px]">
                 <section className="win-panel mx-auto max-w-3xl p-4">
                     <div className="win-sunken p-3 text-red-600">{error}</div>
                     <button onClick={() => router.push("/")} className="win-button mt-3 h-[24px] px-3 text-[11px]">
@@ -189,7 +204,7 @@ function EOSContent() {
     }
 
     return (
-        <main className="win-root h-screen overflow-hidden text-[12px]">
+        <main className="eos-root win-root h-screen overflow-hidden text-[12px]">
             <section className="win-panel mx-auto flex h-full w-full flex-col">
                 <header className="relative pt-1 pb-0.5">
                     <div className="grid max-w-[900px] grid-cols-[1fr_300px] gap-x-4">
@@ -383,7 +398,7 @@ export default function EOSPage() {
     return (
         <Suspense
             fallback={
-                <main className="win-root min-h-screen p-5 text-[12px]">
+                <main className="eos-root win-root min-h-screen p-5 text-[12px]">
                     <section className="win-panel mx-auto max-w-3xl p-4">
                         <div className="win-sunken p-3">Đang tải đề thi...</div>
                     </section>

@@ -19,6 +19,7 @@ interface QuestionData {
 type DatabaseRoot = Record<string, Record<string, QuestionData[]>>;
 
 interface ExamItem {
+  id: number;
   subjectCode: string;
   exam: QuestionData;
 }
@@ -26,6 +27,7 @@ interface ExamItem {
 export default function Home() {
   const [exams, setExams] = useState<ExamItem[]>([]);
   const [search, setSearch] = useState("");
+  const [subjectFilter, setSubjectFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,22 +40,27 @@ export default function Home() {
         return res.json() as Promise<DatabaseRoot>;
       })
       .then((data) => {
-        const firstLayer = Object.values(data)[0];
-
-        if (!firstLayer || typeof firstLayer !== "object") {
-          setExams([]);
-          return;
-        }
-
         const flattened: ExamItem[] = [];
+        let nextId = 1;
 
-        for (const [subjectCode, subjectExams] of Object.entries(firstLayer)) {
-          for (const exam of subjectExams) {
-            flattened.push({ subjectCode, exam });
+        for (const semesterGroup of Object.values(data)) {
+          if (!semesterGroup || typeof semesterGroup !== "object") {
+            continue;
+          }
+
+          for (const [subjectCode, subjectExams] of Object.entries(semesterGroup)) {
+            for (const exam of subjectExams) {
+              flattened.push({
+                id: nextId,
+                subjectCode,
+                exam,
+              });
+              nextId += 1;
+            }
           }
         }
 
-        setExams(flattened);
+        setExams(flattened.sort((a, b) => a.subjectCode.localeCompare(b.subjectCode) || a.exam.name.localeCompare(b.exam.name)));
       })
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : "Có lỗi khi tải đề thi.");
@@ -65,65 +72,128 @@ export default function Home() {
 
   const filteredExams = useMemo(() => {
     const keyword = search.trim().toLowerCase();
-    if (!keyword) {
-      return exams;
-    }
-
     return exams.filter(({ subjectCode, exam }) => {
-      return (
+      const matchedSubject = subjectFilter === "all" || subjectCode === subjectFilter;
+      const matchedKeyword =
+        keyword.length === 0 ||
         subjectCode.toLowerCase().includes(keyword) ||
-        exam.name.toLowerCase().includes(keyword)
-      );
+        exam.name.toLowerCase().includes(keyword);
+
+      return matchedSubject && matchedKeyword;
     });
-  }, [exams, search]);
+  }, [exams, search, subjectFilter]);
+
+  const subjectOptions = useMemo(() => {
+    return ["all", ...Array.from(new Set(exams.map((item) => item.subjectCode))).sort((a, b) => a.localeCompare(b))];
+  }, [exams]);
 
   return (
-    <main className="win-root min-h-screen p-5 text-[12px]">
-      <section className="win-panel mx-auto max-w-6xl p-4">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold text-[#2f2f2f]">Danh sách đề thi</h1>
-            {/* <p className="text-[#4f4f4f]">Chọn một đề để chuyển sang trang làm bài `/eos`.</p> */}
+    <main className="min-h-screen px-4 py-6 text-slate-800 md:px-8">
+      <section className="mx-auto max-w-7xl space-y-6">
+        <header className="rounded-2xl border border-slate-200 bg-white/85 p-5 shadow-sm backdrop-blur md:p-7">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div className="space-y-2">
+              <p className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+                FUO Exam Hub
+              </p>
+              <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Chọn đề thi để bắt đầu làm bài</h1>
+              <p className="max-w-2xl text-sm text-slate-600 md:text-base">
+                Giao diện này tối ưu cho việc duyệt nhanh đề, lọc theo môn và chuyển ngay sang trang làm bài
+                <code className="rounded bg-slate-100 px-1 py-0.5"> /eos</code>.
+              </p>
+            </div>
+
+            <div className="grid w-full max-w-xs grid-cols-2 gap-3 text-sm">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div className="text-slate-500">Tổng đề</div>
+                <div className="mt-1 text-xl font-bold">{exams.length}</div>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div className="text-slate-500">Đang hiển thị</div>
+                <div className="mt-1 text-xl font-bold">{filteredExams.length}</div>
+              </div>
+            </div>
           </div>
-          <div className="text-right text-[#4f4f4f]">
-            <div>Tổng đề: <b>{exams.length}</b></div>
-            <div>Hiển thị: <b>{filteredExams.length}</b></div>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px]">
+            <label className="space-y-1.5">
+              <span className="text-sm font-medium text-slate-700">Tìm nhanh</span>
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Nhập mã môn hoặc tên đề..."
+                className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring"
+              />
+            </label>
+
+            <label className="space-y-1.5">
+              <span className="text-sm font-medium text-slate-700">Lọc theo môn</span>
+              <select
+                value={subjectFilter}
+                onChange={(e) => setSubjectFilter(e.target.value)}
+                className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring"
+              >
+                {subjectOptions.map((subject) => (
+                  <option key={subject} value={subject}>
+                    {subject === "all" ? "Tất cả môn" : subject}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
-        </div>
+        </header>
 
-        <div className="mb-4">
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm theo môn hoặc tên đề..."
-            className="win-sunken h-8 w-full px-2"
-          />
-        </div>
+        {loading && <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">Đang tải dữ liệu đề...</div>}
 
-        {loading && <div className="win-sunken p-3">Đang tải dữ liệu đề...</div>}
-
-        {error && <div className="win-sunken p-3 text-red-600">{error}</div>}
+        {error && <div className="rounded-xl border border-rose-300 bg-rose-50 p-4 text-sm text-rose-700">{error}</div>}
 
         {!loading && !error && (
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {filteredExams.map(({ subjectCode, exam }, index) => {
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {filteredExams.map(({ id, subjectCode, exam }) => {
               const href = `/eos?subject=${encodeURIComponent(subjectCode)}&exam=${encodeURIComponent(exam.name)}`;
-              const uniqueKey = `${subjectCode}-${exam.name}-${exam.thread_url ?? "no-thread"}-${index}`;
 
               return (
-                <article key={uniqueKey} className="win-raised p-3">
-                  <div className="mb-1 text-[11px] text-[#5f5f5f]">{subjectCode}</div>
-                  <h2 className="mb-2 line-clamp-2 min-h-[34px] text-[13px] font-bold text-[#2a2a2a]">{exam.name}</h2>
-                  <div className="mb-3 text-[11px] text-[#4a4a4a]">
-                    Số câu: <b>{exam.questions.length}</b>
+                <article
+                  key={id}
+                  className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <div className="mb-3 flex items-start justify-between gap-2">
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
+                      {subjectCode}
+                    </span>
+                    <span className="text-xs text-slate-500">{exam.questions.length} câu</span>
                   </div>
 
-                  <Link href={href} className="win-button inline-flex h-[24px] items-center px-3 text-[11px] font-bold">
-                    Bắt đầu làm đề
-                  </Link>
+                  <h2 className="mb-3 line-clamp-2 min-h-12 text-base font-semibold leading-snug text-slate-900">
+                    {exam.name}
+                  </h2>
+
+                  <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+                    <a
+                      href={exam.thread_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs font-medium text-slate-500 transition hover:text-slate-700"
+                    >
+                      Xem nguồn ↗
+                    </a>
+
+                    <Link
+                      href={href}
+                      className="inline-flex h-9 items-center rounded-lg bg-indigo-600 px-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500"
+                    >
+                      Vào làm bài
+                    </Link>
+                  </div>
                 </article>
               );
             })}
+          </div>
+        )}
+
+        {!loading && !error && filteredExams.length === 0 && (
+          <div className="rounded-xl border border-slate-200 bg-white p-7 text-center text-sm text-slate-600">
+            Không tìm thấy đề phù hợp. Thử đổi từ khóa hoặc bỏ bộ lọc môn nhé.
           </div>
         )}
       </section>
