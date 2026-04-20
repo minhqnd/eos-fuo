@@ -85,6 +85,8 @@ export default function Home() {
 
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
+    } else {
+      setCurrentIndex(0); // Infinity next: go to first question
     }
   };
 
@@ -99,6 +101,8 @@ export default function Home() {
 
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
+    } else {
+      setCurrentIndex(questions.length - 1); // Infinity back: go to last question
     }
   };
 
@@ -227,7 +231,7 @@ export default function Home() {
 
         <div className="mx-3 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-white">
           <div className="flex h-full flex-col p-0.5">
-            <div className="ml-22 mb-1 flex items-center gap-2 px-1 text-[14px] mt-4 shrink-0">
+            <div className="ml-18 mb-1 flex items-center gap-2 px-1 text-[14px] mt-4 shrink-0">
               <span className="font-bold text-[#3f9a34]">
                 There are {questions.length} questions, and your progress of answering is
               </span>
@@ -259,8 +263,8 @@ export default function Home() {
                 </div>
 
                 <div className="mt-18 mb-4 flex gap-1 justify-center">
-                  <button onClick={handleBack} disabled={currentIndex === 0} className="win-button h-5 w-10 text-[11px] disabled:opacity-50">Back</button>
-                  <button onClick={handleNext} disabled={currentIndex === questions.length - 1} className="win-button h-5 w-10 text-[11px] disabled:opacity-50">Next</button>
+                  <button onClick={handleBack} className="win-button-modern h-5 w-9 text-[8px]">Back</button>
+                  <button onClick={handleNext} className="win-button-modern h-5 w-9 text-[8px]">Next</button>
                 </div>
               </aside>
 
