@@ -226,7 +226,7 @@ export default function Home() {
                   (Choose 1 answer)
                 </div> */}
 
-                <div className="win-sunken h-[calc(100%-22px)] overflow-auto p-1.5 text-[12px] leading-[1.35] text-[#353535]">
+                <div className="win-main h-[calc(100%-22px)] overflow-auto p-1.5 text-[12px] leading-[1.35] text-[#353535]">
                   {multipleChoiceLines.map((line, idx) => (
                     <div key={`${line}-${idx}`}>{line || <span>&nbsp;</span>}</div>
                   ))}
