@@ -196,7 +196,7 @@ export default function Home() {
             </div>
 
             {/* RIGHT COLUMN: avatar/time + 27648/Ferrari */}
-            <div className="relative -ml-[110px] -top-[10px] flex items-start gap-12 pt-1 pl-1">
+            <div className="relative -ml-[80px] -top-[10px] flex items-start gap-12 pt-1 pl-1">
               <div className="relative -ml-6 mt-[108px] flex shrink-0 flex-col items-center leading-none">
                 <div className="absolute -top-[90px]">
                   <div className="relative">
@@ -213,7 +213,7 @@ export default function Home() {
                 </span>
               </div>
 
-              <div className="relative flex shrink-0 flex-col items-center top-[10px]">
+              <div className="relative flex shrink-0 flex-col items-center top-[10px] ml-12">
                 <div className="text-[34px]  leading-none font-medium text-[#2f2f2f]">27648</div>
                 <div className="relative h-[72px] w-[72px] mt-1 flex items-center justify-center mt-5">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -227,7 +227,7 @@ export default function Home() {
 
         <div className="mx-3 mt-1 min-h-0 flex-1 border border-[#cdcdcd] bg-white">
           <div className="flex h-full flex-col p-0.5">
-            <div className="ml-22 mb-1 flex items-center gap-2 px-1 text-[12px] mt-4 shrink-0 mr-1">
+            <div className="ml-22 mb-1 flex items-center gap-2 px-1 text-[14px] mt-4 shrink-0">
               <span className="font-bold text-[#3f9a34]">
                 There are {questions.length} questions, and your progress of answering is
               </span>
@@ -240,7 +240,7 @@ export default function Home() {
             </div>
 
             <div className="grid min-h-0 flex-1 grid-cols-[86px_1fr] bg-white">
-              <aside className="px-2 pt-1.5 text-[12px] flex flex-col items-center">
+              <aside className="px-2 pt-1.5 text-[14px] flex flex-col items-center">
                 <div className="w-full">
                   <div className="mb-2 font-semibold text-[#2e8f2f] text-center">Answer</div>
                   <div className="space-y-3.5 flex flex-col items-center">
