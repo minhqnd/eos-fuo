@@ -1,3 +1,8 @@
+.eos-force-light,
+.eos-force-light * {
+  color-scheme: light !important;
+}
+
 .eos-root {
   --background: #e9e9e9;
   --foreground: #222222;
@@ -176,4 +181,15 @@
   color: #ffffff;
   text-align: left;
   padding-left: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .eos-force-light .eos-root,
+  .eos-force-light .win-root,
+  .eos-force-light .win-panel,
+  .eos-force-light .win-main,
+  .eos-force-light .win-sunken,
+  .eos-force-light .win-progress-bg {
+    filter: none !important;
+  }
 }
