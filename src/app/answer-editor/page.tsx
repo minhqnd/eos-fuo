@@ -172,26 +172,27 @@ function AnswerEditorContent() {
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            {/* <Link
-              href={`${baseExamHref}&mode=review`}
-              className="inline-flex h-9 items-center rounded-lg border border-emerald-300 bg-emerald-50 px-3 text-sm font-semibold text-emerald-700 shadow-sm transition hover:bg-emerald-100"
-            >
-              Mở ôn tập
-            </Link>
-
-            <Link
-              href={baseExamHref}
-              className="inline-flex h-9 items-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
-            >
-              Mở thi thử
-            </Link> */}
-
             <Link
               href="/"
               className="inline-flex h-9 items-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
             >
               Quay lại Trang chủ
             </Link>
+            <Link
+              href={`${baseExamHref}&mode=review`}
+              className="inline-flex h-9 items-center rounded-lg border px-3  border-slate-300 bg-white text-sm font-semibold  shadow-sm  text-slate-700 transition hover:bg-slate-50 "
+            >
+              Ôn tập
+            </Link>
+
+            <Link
+              href={baseExamHref}
+              className="inline-flex h-9 items-center rounded-lg border border-emerald-300 bg-emerald-50 px-3 text-sm font-semibold text-emerald-700 shadow-sm transition hover:bg-emerald-100 "
+            >
+              Thi thử
+            </Link>
+
+
           </div>
 
           <div className="mt-3 text-sm text-slate-600">
