@@ -270,6 +270,15 @@ export default function Home() {
               const answerEditorHref = getAnswerEditorHref(subjectCode, exam.name);
               const overrides = readAnswerOverrides(subjectCode, exam.name);
               const answeredCount = exam.questions.length - countMissingAnswersForQuestions(exam.questions, overrides);
+              const answeredRatio = exam.questions.length > 0 ? answeredCount / exam.questions.length : 0;
+              const answeredBadgeClass =
+                answeredRatio >= 0.85
+                  ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
+                  : answeredRatio >= 0.6
+                    ? "bg-sky-50 text-sky-700 ring-sky-200"
+                    : answeredRatio >= 0.3
+                      ? "bg-amber-50 text-amber-700 ring-amber-200"
+                      : "bg-rose-50 text-rose-700 ring-rose-200";
 
               return (
                 <article
@@ -284,7 +293,7 @@ export default function Home() {
                       <span className="rounded-full bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-500">
                         {exam.questions.length} câu
                       </span>
-                      <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ring-1 ${answeredBadgeClass}`}>
                         {answeredCount}/{exam.questions.length} có đáp án
                       </span>
                     </div>
