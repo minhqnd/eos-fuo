@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
     getEffectiveAnswerForQuestion,
     hasAnswerKey,
@@ -84,11 +84,21 @@ function EOSContent() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [resultSummary, setResultSummary] = useState<ExamResultSummary | null>(null);
+    const [securityWarning, setSecurityWarning] = useState<string | null>(null);
+    const [securityViolationCount, setSecurityViolationCount] = useState(0);
+    const [requiresFullscreenAction, setRequiresFullscreenAction] = useState(false);
+    const lastViolationAtRef = useRef(0);
+    const requestingFullscreenRef = useRef(false);
+    const lastFullscreenStateRef = useRef<boolean | null>(null);
+    const hasEnteredFullscreenRef = useRef(false);
 
     const selectedSubject = searchParams.get("subject") ?? "";
     const selectedExamName = searchParams.get("exam") ?? "";
     const mode = (searchParams.get("mode") ?? "").toLowerCase();
+    const entry = (searchParams.get("entry") ?? "").toLowerCase();
     const isReviewMode = ["review", "on-tap", "ontap", "practice"].includes(mode);
+    const isMockExamMode = !isReviewMode;
+    const shouldAutoRequestFromIndex = isMockExamMode && entry === "index";
 
     useEffect(() => {
         if (!selectedSubject || !selectedExamName) {
@@ -143,6 +153,12 @@ function EOSContent() {
                 setIsFinishConfirmed(false);
                 setTimeLeft(EXAM_DURATION_MINUTES * 60);
                 setResultSummary(null);
+                setSecurityWarning(null);
+                setSecurityViolationCount(0);
+                setRequiresFullscreenAction(false);
+                lastViolationAtRef.current = 0;
+                lastFullscreenStateRef.current = null;
+                hasEnteredFullscreenRef.current = false;
             })
             .catch((err: unknown) => {
                 setError(err instanceof Error ? err.message : "Có lỗi khi tải đề thi.");
@@ -301,6 +317,126 @@ function EOSContent() {
             [currentIndex]: !prev[currentIndex],
         }));
     };
+
+    const registerViolation = useCallback((reason: string) => {
+        const now = Date.now();
+        if (now - lastViolationAtRef.current < 800) return;
+
+        lastViolationAtRef.current = now;
+        setSecurityViolationCount((prev) => prev + 1);
+        setSecurityWarning(reason);
+    }, []);
+
+    const requestFullscreenIfNeeded = useCallback(
+        async (failureMessage: string, isUserGesture = false) => {
+            if (document.fullscreenElement) {
+                setRequiresFullscreenAction(false);
+                return;
+            }
+
+            if (requestingFullscreenRef.current) return;
+
+            const root = document.documentElement;
+            if (!root.requestFullscreen) {
+                if (hasEnteredFullscreenRef.current || isUserGesture) {
+                    registerViolation(failureMessage);
+                }
+                setRequiresFullscreenAction(true);
+                return;
+            }
+
+            try {
+                requestingFullscreenRef.current = true;
+                await root.requestFullscreen();
+                hasEnteredFullscreenRef.current = true;
+                setRequiresFullscreenAction(false);
+            } catch {
+                if (hasEnteredFullscreenRef.current || isUserGesture) {
+                    registerViolation(failureMessage);
+                }
+                if (!isUserGesture) {
+                    setRequiresFullscreenAction(true);
+                }
+            } finally {
+                requestingFullscreenRef.current = false;
+            }
+        },
+        [registerViolation],
+    );
+
+    useEffect(() => {
+        if (!isMockExamMode || loading || error || questions.length === 0 || resultSummary) return;
+
+        lastFullscreenStateRef.current = Boolean(document.fullscreenElement);
+        if (document.fullscreenElement) {
+            hasEnteredFullscreenRef.current = true;
+        }
+
+        if (!document.fullscreenElement) {
+            setRequiresFullscreenAction(true);
+            if (shouldAutoRequestFromIndex) {
+                void requestFullscreenIfNeeded("Không thể bật toàn màn hình tự động. Vui lòng cho phép fullscreen.");
+            }
+        }
+
+        const handleWindowBlur = () => {
+            registerViolation("Bạn đã rời khỏi cửa sổ làm bài.");
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                registerViolation("Bạn đã chuyển tab sang cửa sổ khác.");
+                return;
+            }
+
+            if (!document.fullscreenElement) {
+                setRequiresFullscreenAction(true);
+            }
+        };
+
+        const handleFullscreenChange = () => {
+            if (document.fullscreenElement) {
+                lastFullscreenStateRef.current = true;
+                hasEnteredFullscreenRef.current = true;
+                setRequiresFullscreenAction(false);
+                return;
+            }
+
+            lastFullscreenStateRef.current = false;
+            if (hasEnteredFullscreenRef.current) {
+                registerViolation("Bạn đã thoát chế độ toàn màn hình.");
+            }
+            setRequiresFullscreenAction(true);
+        };
+
+        const fullscreenWatchdog = window.setInterval(() => {
+            if (document.hidden) return;
+
+            const isFullscreenNow = Boolean(document.fullscreenElement);
+            const wasFullscreen = lastFullscreenStateRef.current;
+
+            if (!isFullscreenNow) {
+                setRequiresFullscreenAction(true);
+
+                if (wasFullscreen === true) {
+                    registerViolation("Bạn đã thoát chế độ toàn màn hình.");
+                }
+            }
+
+            lastFullscreenStateRef.current = isFullscreenNow;
+        }, 1000);
+
+        window.addEventListener("blur", handleWindowBlur);
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+        return () => {
+            window.removeEventListener("blur", handleWindowBlur);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            document.removeEventListener("fullscreenchange", handleFullscreenChange);
+            window.clearInterval(fullscreenWatchdog);
+        };
+    }, [error, isMockExamMode, loading, questions.length, registerViolation, requestFullscreenIfNeeded, resultSummary, shouldAutoRequestFromIndex]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -592,7 +728,12 @@ function EOSContent() {
                     </div>
 
                     <div className="pointer-events-none absolute inset-0 flex items-end justify-center pb-0.5">
-                        <span className="text-[42px] leading-none tracking-[0.5px] text-[#d5a32a]">WEB RUNNING</span>
+                        <span
+                            className="text-[42px] leading-none tracking-[0.5px]"
+                            style={{ color: securityViolationCount > 0 ? "#d63b3b" : "#d5a32a" }}
+                        >
+                            WEB RUNNING
+                        </span>
                     </div>
 
                     <div className="z-10 flex w-[300px] items-end justify-end gap-1.5 pb-0.5 text-[11px]">
@@ -642,6 +783,54 @@ function EOSContent() {
                                     className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
                                 >
                                     Về danh sách đề
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isMockExamMode && securityWarning && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 p-4">
+                        <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-white p-5 shadow-2xl">
+                            <h2 className="mb-2 text-lg font-bold text-rose-700">Cảnh báo vi phạm chế độ thi thử</h2>
+                            <p className="text-sm text-slate-700">{securityWarning}</p>
+                            <p className="mt-2 text-xs text-slate-500">
+                                Số lần cảnh báo: <b>{securityViolationCount}</b>
+                            </p>
+
+                            <div className="mt-4 flex justify-end gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setSecurityWarning(null)}
+                                    className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                                >
+                                    Đã hiểu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isMockExamMode && requiresFullscreenAction && (
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 p-4">
+                        <div className="w-full max-w-md rounded-2xl border border-amber-200 bg-white p-5 shadow-2xl">
+                            <h2 className="mb-2 text-lg font-bold text-amber-700">Bắt buộc toàn màn hình</h2>
+                            <p className="text-sm text-slate-700">
+                                Chế độ thi thử bắt buộc phải ở chế độ toàn màn hình. Bấm nút bên dưới để tiếp tục thi thử.
+                            </p>
+
+                            <div className="mt-4 flex justify-end">
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        void requestFullscreenIfNeeded(
+                                            "Không thể bật toàn màn hình. Vui lòng kiểm tra quyền fullscreen của trình duyệt.",
+                                            true,
+                                        )
+                                    }
+                                    className="rounded-lg bg-amber-600 px-3 py-2 text-sm font-semibold text-white hover:bg-amber-500"
+                                >
+                                    Bật fullscreen để tiếp tục
                                 </button>
                             </div>
                         </div>

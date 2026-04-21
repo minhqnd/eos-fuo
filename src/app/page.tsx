@@ -176,7 +176,7 @@ export default function Home() {
     const shouldEnterFullscreen = mode !== "review";
     const targetHref = mode === "review"
       ? `${getExamHref(subjectCode, exam.name)}&mode=review`
-      : getExamHref(subjectCode, exam.name);
+      : `${getExamHref(subjectCode, exam.name)}&entry=index`;
     const answerEditorHref = getAnswerEditorHref(subjectCode, exam.name);
 
     if (missingCount > 0) {
