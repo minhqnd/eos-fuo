@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import DesktopOnlyGuard from "./desktop-only-guard";
+import DisableReactDevToolsInProduction from "./disable-react-devtools";
 import "./base.css";
 
 const geistSans = Geist({
@@ -29,6 +30,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <DisableReactDevToolsInProduction />
         <DesktopOnlyGuard>{children}</DesktopOnlyGuard>
       </body>
     </html>
