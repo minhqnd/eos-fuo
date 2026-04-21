@@ -559,15 +559,27 @@ export default function DesktopEnvironment({
               </div>
 
               <div>
-                <p className="text-[12px] font-bold mb-1 ml-1 text-[#2a2a2a]">Groq API Keys</p>
+                <div className="flex justify-between items-center mb-1 ml-1">
+                  <p className="text-[12px] font-bold text-[#2a2a2a]">Groq API Keys</p>
+                  <a 
+                    href="https://console.groq.com/keys" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[10px] text-[#0000ff] hover:underline flex items-center gap-1"
+                  >
+                    Lấy API Key tại đây ↗
+                  </a>
+                </div>
                 <textarea 
                   className="w-full h-[120px] win-sunken p-2 text-[11px] font-mono outline-none resize-none bg-white"
                   placeholder="Enter one Groq API Key per line...&#10;gsk_xxxxxxx&#10;gsk_yyyyyyy"
                   value={groqApiKey}
                   onChange={(e) => setGroqApiKey(e.target.value)}
                 />
-                <p className="text-[10px] text-[#000080] mt-1 ml-1">
-                  💡 Multiple keys will be rotated automatically to bypass rate limits.
+                <p className="text-[10px] text-[#000080] mt-1 ml-1 leading-tight">
+                  💡 Hướng dẫn: Đăng nhập Groq Console → API Keys → Create API Key.
+                  <br />
+                  Xoay vòng key tự động được hỗ trợ khi nhập nhiều key (mỗi dòng 1 key).
                 </p>
               </div>
               
@@ -643,15 +655,27 @@ export default function DesktopEnvironment({
               </div>
 
               <div>
-                <p className="text-[12px] font-bold mb-1 ml-1 text-[#2a2a2a]">Gemini API Keys</p>
+                <div className="flex justify-between items-center mb-1 ml-1">
+                  <p className="text-[12px] font-bold text-[#2a2a2a]">Gemini API Keys</p>
+                  <a 
+                    href="https://aistudio.google.com/app/apikey" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[10px] text-[#9c27b0] hover:underline flex items-center gap-1"
+                  >
+                    Lấy API Key tại đây ↗
+                  </a>
+                </div>
                 <textarea 
                   className="w-full h-[120px] win-sunken p-2 text-[11px] font-mono outline-none resize-none bg-white"
                   placeholder="Enter one Gemini API Key per line...&#10;AIzaSyxxxxxxxxx&#10;AIzaSyyyyyyyyy"
                   value={geminiApiKey}
                   onChange={(e) => setGeminiApiKey(e.target.value)}
                 />
-                <p className="text-[10px] text-[#9c27b0] mt-1 ml-1">
-                  💡 Multiple keys will be rotated automatically.
+                <p className="text-[10px] text-[#9c27b0] mt-1 ml-1 leading-tight">
+                  💡 Hướng dẫn: Truy cập Google AI Studio → Create API Key.
+                  <br />
+                  Hệ thống tự động sử dụng khoá dự phòng nếu bị giới hạn (rate limit).
                 </p>
               </div>
               
