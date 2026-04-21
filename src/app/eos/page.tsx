@@ -360,10 +360,22 @@ function EOSContent() {
     };
 
     const handleAnswerSelect = (option: string) => {
-        setAnswers((prev) => ({
-            ...prev,
-            [currentIndex]: option,
-        }));
+        setAnswers((prev) => {
+            const next = { ...prev };
+
+            if (prev[currentIndex] === option) {
+                delete next[currentIndex];
+                setConfirmedAnswers((confirmedPrev) => {
+                    const nextConfirmed = { ...confirmedPrev };
+                    delete nextConfirmed[currentIndex];
+                    return nextConfirmed;
+                });
+                return next;
+            }
+
+            next[currentIndex] = option;
+            return next;
+        });
     };
 
     const handleShowAnswer = () => {
