@@ -43,6 +43,43 @@ function extractCorrectOptions(answer: string | null) {
     return new Set((answer.toUpperCase().match(/[A-Z]/g) ?? []));
 }
 
+function generateExamCode(examName: string) {
+    const normalized = examName.replace(/\s+/g, " ").trim().toLowerCase();
+    let hash = 0;
+
+    for (let index = 0; index < normalized.length; index += 1) {
+        hash = (hash * 31 + normalized.charCodeAt(index)) % 100000;
+    }
+
+    return hash.toString().padStart(5, "0");
+}
+
+const EXAM_CHECK_IMAGES = [
+    "/imgcheck/doge.png",
+    "/imgcheck/hacker.png",
+    "/imgcheck/lamborghini.png",
+    "/imgcheck/porsche.png",
+    "/imgcheck/sadcat.png",
+];
+
+function generateExamCheckImage(subjectCode: string, examName: string, examCode: string) {
+    const normalized = `${subjectCode}:${examName}:${examCode}`.replace(/\s+/g, " ").trim().toLowerCase();
+    let hash = 2166136261;
+
+    for (let index = 0; index < normalized.length; index += 1) {
+        hash ^= normalized.charCodeAt(index);
+        hash = Math.imul(hash, 16777619);
+    }
+
+    hash ^= hash >>> 16;
+    hash = Math.imul(hash, 2246822507);
+    hash ^= hash >>> 13;
+    hash = Math.imul(hash, 3266489909);
+    hash ^= hash >>> 16;
+
+    return EXAM_CHECK_IMAGES[Math.abs(hash) % EXAM_CHECK_IMAGES.length];
+}
+
 function Field({ width = "100%" }: { width?: number | string }) {
     return <span className="win-sunken block h-5 align-middle" style={{ width }} />;
 }
@@ -189,6 +226,11 @@ function EOSContent() {
     };
 
     const currentQuestion = questions[currentIndex];
+    const examDisplayCode = useMemo(() => generateExamCode(examName || selectedExamName), [examName, selectedExamName]);
+    const examCheckImage = useMemo(
+        () => generateExamCheckImage(selectedSubject || "unknown", examName || selectedExamName, examDisplayCode),
+        [examDisplayCode, examName, selectedExamName, selectedSubject],
+    );
 
     useLayoutEffect(() => {
         if (!currentQuestion) {
@@ -654,10 +696,10 @@ function EOSContent() {
                             </div>
 
                             <div className="relative flex shrink-0 flex-col items-center top-[10px] ml-12">
-                                <div className="text-[34px]  leading-none font-medium text-[#2f2f2f]">27648</div>
+                                <div className="text-[34px]  leading-none font-medium text-[#2f2f2f]">{examDisplayCode}</div>
                                 <div className="relative mt-5 flex h-[72px] w-[72px] items-center justify-center">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src="/porsche.png" alt="img check" className="max-h-full max-w-full object-contain" />
+                                    <img src={examCheckImage} alt="img check" className="max-h-full max-w-full object-contain" />
                                 </div>
                             </div>
                         </div>
