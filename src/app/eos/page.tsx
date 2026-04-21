@@ -91,6 +91,8 @@ function EOSContent() {
     const [requiresFullscreenAction, setRequiresFullscreenAction] = useState(false);
     const lastViolationAtRef = useRef(0);
     const requestingFullscreenRef = useRef(false);
+    const suppressSecurityWarningsRef = useRef(false);
+    const suppressSecurityWarningsUntilRef = useRef(0);
     const lastFullscreenStateRef = useRef<boolean | null>(null);
     const hasEnteredFullscreenRef = useRef(false);
 
@@ -333,6 +335,8 @@ function EOSContent() {
 
     const registerViolation = useCallback((reason: string) => {
         const now = Date.now();
+        if (suppressSecurityWarningsRef.current || now < suppressSecurityWarningsUntilRef.current) return;
+
         if (now - lastViolationAtRef.current < 800) return;
 
         lastViolationAtRef.current = now;
@@ -360,6 +364,8 @@ function EOSContent() {
 
             try {
                 requestingFullscreenRef.current = true;
+                suppressSecurityWarningsRef.current = true;
+                suppressSecurityWarningsUntilRef.current = Date.now() + 1500;
                 await root.requestFullscreen();
                 hasEnteredFullscreenRef.current = true;
                 setRequiresFullscreenAction(false);
@@ -372,6 +378,10 @@ function EOSContent() {
                 }
             } finally {
                 requestingFullscreenRef.current = false;
+                if (!document.fullscreenElement) {
+                    suppressSecurityWarningsRef.current = false;
+                    suppressSecurityWarningsUntilRef.current = 0;
+                }
             }
         },
         [registerViolation],
@@ -411,11 +421,15 @@ function EOSContent() {
             if (document.fullscreenElement) {
                 lastFullscreenStateRef.current = true;
                 hasEnteredFullscreenRef.current = true;
+                suppressSecurityWarningsRef.current = false;
+                suppressSecurityWarningsUntilRef.current = Math.max(suppressSecurityWarningsUntilRef.current, Date.now() + 500);
                 setRequiresFullscreenAction(false);
                 return;
             }
 
             lastFullscreenStateRef.current = false;
+            suppressSecurityWarningsRef.current = false;
+            suppressSecurityWarningsUntilRef.current = 0;
             if (hasEnteredFullscreenRef.current) {
                 registerViolation("Bạn đã thoát chế độ toàn màn hình.");
             }
