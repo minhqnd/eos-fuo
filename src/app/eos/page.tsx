@@ -35,6 +35,7 @@ interface ExamResultSummary {
     incorrectAnswers: number;
     answeredWithoutKey: number;
     scorePercent: number;
+    scoreOnTen: number;
 }
 
 function extractCorrectOptions(answer: string | null) {
@@ -230,6 +231,7 @@ function EOSContent() {
         const gradableQuestions = totalQuestions - missingKeyQuestions;
         const unansweredQuestions = totalQuestions - answeredQuestions;
         const scorePercent = gradableQuestions > 0 ? (correctAnswers / gradableQuestions) * 100 : 0;
+        const scoreOnTen = gradableQuestions > 0 ? (correctAnswers / gradableQuestions) * 10 : 0;
 
         return {
             totalQuestions,
@@ -241,6 +243,7 @@ function EOSContent() {
             incorrectAnswers,
             answeredWithoutKey,
             scorePercent,
+            scoreOnTen,
         };
     };
 
@@ -610,9 +613,9 @@ function EOSContent() {
                                 <div>Đúng: <b className="text-emerald-700">{resultSummary.correctAnswers}</b></div>
                                 <div>Sai: <b className="text-rose-700">{resultSummary.incorrectAnswers}</b></div>
                                 <div>
-                                    Điểm (theo câu có đáp án key):
-                                    <b className="ml-1">{resultSummary.correctAnswers}/{resultSummary.gradableQuestions}</b>
-                                    <span className="ml-1">({resultSummary.scorePercent.toFixed(1)}%)</span>
+                                    Điểm (thang 10):
+                                    <b className="ml-1">{resultSummary.scoreOnTen.toFixed(2)}/10</b>
+                                    <span className="ml-1">({resultSummary.correctAnswers}/{resultSummary.gradableQuestions} câu đúng)</span>
                                 </div>
                             </div>
 
