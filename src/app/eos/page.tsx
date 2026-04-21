@@ -477,7 +477,7 @@ function EOSContent() {
 
     if (loading) {
         return (
-            <main className="eos-root win-root min-h-screen p-5 text-[12px]">
+            <main className="eos-root win-root min-h-screen select-none p-5 text-[12px]">
                 <section className="win-panel mx-auto max-w-3xl p-4">
                     <div className="win-sunken p-3">Đang tải đề thi...</div>
                 </section>
@@ -487,7 +487,7 @@ function EOSContent() {
 
     if (error) {
         return (
-            <main className="eos-root win-root min-h-screen p-5 text-[12px]">
+            <main className="eos-root win-root min-h-screen select-none p-5 text-[12px]">
                 <section className="win-panel mx-auto max-w-3xl p-4">
                     <div className="win-sunken p-3 text-red-600">{error}</div>
                     <button onClick={() => router.push("/")} className="win-button mt-3 h-[24px] px-3 text-[11px]">
@@ -499,7 +499,7 @@ function EOSContent() {
     }
 
     return (
-        <main className="eos-root win-root h-screen overflow-hidden text-[12px]">
+        <main className="eos-root win-root h-screen select-none overflow-hidden text-[12px]">
             <section className="win-panel mx-auto flex h-full w-full flex-col">
                 {isReviewMode && (
                     <div className="win-sunken absolute top-0 right-0 z-30 w-[220px] p-1.5 text-[10px] leading-[1.35] text-[#2f2f2f]">
@@ -845,7 +845,7 @@ export default function EOSPage() {
     return (
         <Suspense
             fallback={
-                <main className="eos-root win-root min-h-screen p-5 text-[12px]">
+                <main className="eos-root win-root min-h-screen select-none p-5 text-[12px]">
                     <section className="win-panel mx-auto max-w-3xl p-4">
                         <div className="win-sunken p-3">Đang tải đề thi...</div>
                     </section>
