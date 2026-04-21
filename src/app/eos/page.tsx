@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
     getEffectiveAnswerForQuestion,
     hasAnswerKey,
@@ -80,6 +80,8 @@ function EOSContent() {
     const [answers, setAnswers] = useState<Record<number, string>>({});
     const [confirmedAnswers, setConfirmedAnswers] = useState<Record<number, string>>({});
     const [revealedAnswers, setRevealedAnswers] = useState<Record<number, boolean>>({});
+    const [isQuestionImageLoading, setIsQuestionImageLoading] = useState(true);
+    const [isQuestionImageError, setIsQuestionImageError] = useState(false);
     const [isFinishConfirmed, setIsFinishConfirmed] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -185,6 +187,17 @@ function EOSContent() {
     };
 
     const currentQuestion = questions[currentIndex];
+
+    useLayoutEffect(() => {
+        if (!currentQuestion) {
+            setIsQuestionImageLoading(false);
+            setIsQuestionImageError(false);
+            return;
+        }
+
+        setIsQuestionImageLoading(true);
+        setIsQuestionImageError(false);
+    }, [currentQuestion?.id, currentQuestion?.image_url]);
 
     const progressPercent = useMemo(() => {
         if (questions.length === 0) return 0;
@@ -479,7 +492,7 @@ function EOSContent() {
         return (
             <main className="eos-root win-root min-h-screen select-none p-5 text-[12px]">
                 <section className="win-panel mx-auto max-w-3xl p-4">
-                    <div className="win-sunken p-3">Đang tải đề thi...</div>
+                    <div className="win-sunken p-3">Loading exam...</div>
                 </section>
             </main>
         );
@@ -693,12 +706,34 @@ function EOSContent() {
                                 <div className="win-main absolute inset-0 overflow-y-auto overflow-x-hidden p-1.5 text-[12px] leading-[1.35] text-[#353535]">
                                     {currentQuestion && (
                                         <div className="w-full">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img
-                                                src={currentQuestion.image_url}
-                                                alt={`Question ${currentIndex + 1}`}
-                                                className="block h-auto w-full"
-                                            />
+                                            <div className="relative min-h-[220px] w-full overflow-hidden bg-[#f6f6f6]">
+                                                {isQuestionImageLoading && (
+                                                    <div className="absolute inset-0 flex items-center justify-center bg-[#f6f6f6] text-[13px] text-[#6b6b6b]">
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#c9c9c9] border-t-[#3f9a34]" />
+                                                            <span>Loading question...</span>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {isQuestionImageError && !isQuestionImageLoading && (
+                                                    <div className="absolute inset-0 flex items-center justify-center bg-[#f6f6f6] px-4 text-center text-[13px] text-[#a94442]">
+                                                        Không tải được ảnh câu hỏi. Vui lòng thử tắt VPN nếu đang bật hoặc chuyển câu khác.
+                                                    </div>
+                                                )}
+
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
+                                                    src={currentQuestion.image_url}
+                                                    alt={`Question ${currentIndex + 1}`}
+                                                    className={`block h-auto w-full ${isQuestionImageLoading ? "invisible" : "visible"}`}
+                                                    onLoad={() => setIsQuestionImageLoading(false)}
+                                                    onError={() => {
+                                                        setIsQuestionImageLoading(false);
+                                                        setIsQuestionImageError(true);
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
                                     )}
                                 </div>
