@@ -36,6 +36,17 @@ export default function DesktopEnvironment({
   const [activeExamData, setActiveExamData] = useState<ExamThread | null>(null);
   const [isExamLoading, setIsExamLoading] = useState(false);
 
+  // Responsive Check
+  const [windowWidth, setWindowWidth] = useState<number>(0);
+  const isMobile = useMemo(() => windowWidth !== 0 && windowWidth < 1024, [windowWidth]);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Window Management States
   const [windowOrder, setWindowOrder] = useState<string[]>(['eos', 'groq', 'gemini']);
   
@@ -154,6 +165,24 @@ export default function DesktopEnvironment({
       : Array.from(new Set([...sortedCurriculumKy, ...sortedCurriculumRemainderKy])).sort();
     return sems;
   }, [viewMode, sortedSemesters, sortedRemainderSemesters, sortedCurriculumKy, sortedCurriculumRemainderKy]);
+
+  if (isMobile) {
+    return (
+      <div className="fixed inset-0 z-[9999] bg-[#f0f2f5] flex items-center justify-center p-6 font-sans">
+        <div className="bg-white rounded-[40px] shadow-xl p-10 max-w-[500px] w-full text-center flex flex-col gap-6">
+          <h1 className="text-[32px] font-black text-[#1a2b4b] leading-tight">
+            Thiết bị không được hỗ trợ
+          </h1>
+          <p className="text-[20px] text-[#4b5e7e] leading-relaxed font-medium">
+            Ứng dụng này chỉ dùng trên máy tính. Vui lòng mở lại bằng desktop/laptop để tiếp tục.
+          </p>
+          <div className="text-[16px] text-[#718096] mt-4">
+            Chiều ngang hiện tại: <span className="font-bold text-[#4a5568]">{windowWidth}px</span> • Tối thiểu yêu cầu: <span className="font-bold text-[#4a5568]">1024px</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (activeExamMeta) {
     return (
