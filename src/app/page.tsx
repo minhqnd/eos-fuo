@@ -268,6 +268,8 @@ export default function Home() {
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredExams.map(({ id, subjectCode, exam }) => {
               const answerEditorHref = getAnswerEditorHref(subjectCode, exam.name);
+              const overrides = readAnswerOverrides(subjectCode, exam.name);
+              const answeredCount = exam.questions.length - countMissingAnswersForQuestions(exam.questions, overrides);
 
               return (
                 <article
@@ -281,6 +283,9 @@ export default function Home() {
                       </span>
                       <span className="rounded-full bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-500">
                         {exam.questions.length} câu
+                      </span>
+                      <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                        {answeredCount}/{exam.questions.length} có đáp án
                       </span>
                     </div>
 

@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FPT Exam UI Replica",
+  title: "EOS FUO",
   description: "Kho đề thi tổng hợp và giao diện luyện đề EOS",
 };
 
