@@ -328,12 +328,15 @@ function EOSContent() {
     const handleNext = () => {
         if (!questions.length) return;
 
-        if (answers[currentIndex]) {
-            setConfirmedAnswers((prev) => ({
-                ...prev,
-                [currentIndex]: answers[currentIndex],
-            }));
-        }
+        setConfirmedAnswers((prev) => {
+            const next = { ...prev };
+            if (answers[currentIndex]) {
+                next[currentIndex] = answers[currentIndex];
+            } else {
+                delete next[currentIndex];
+            }
+            return next;
+        });
 
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(currentIndex + 1);
@@ -345,12 +348,15 @@ function EOSContent() {
     const handleBack = () => {
         if (!questions.length) return;
 
-        if (answers[currentIndex]) {
-            setConfirmedAnswers((prev) => ({
-                ...prev,
-                [currentIndex]: answers[currentIndex],
-            }));
-        }
+        setConfirmedAnswers((prev) => {
+            const next = { ...prev };
+            if (answers[currentIndex]) {
+                next[currentIndex] = answers[currentIndex];
+            } else {
+                delete next[currentIndex];
+            }
+            return next;
+        });
 
         if (currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
@@ -365,11 +371,6 @@ function EOSContent() {
 
             if (prev[currentIndex] === option) {
                 delete next[currentIndex];
-                setConfirmedAnswers((confirmedPrev) => {
-                    const nextConfirmed = { ...confirmedPrev };
-                    delete nextConfirmed[currentIndex];
-                    return nextConfirmed;
-                });
                 return next;
             }
 
