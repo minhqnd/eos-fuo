@@ -19,7 +19,8 @@ export type Database = Record<string, Record<string, ExamThread[]>>;
 const db: Database = originalDb as unknown as Database;
 const remainderDb: Database = remainderDbRaw as unknown as Database;
 
-export function extractSemester(threadName: string): string {
+export function extractSemester(threadName: string | null | undefined): string {
+  if (!threadName) return "Other";
   const match = threadName.match(/(FA|SP|SU|FALL|SPRING|SUM|SUMMER)\s*-?\s*(\d{2,4})/i);
   if (match) {
       let term = match[1].toUpperCase();

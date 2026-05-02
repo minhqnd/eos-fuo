@@ -48973,6 +48973,264 @@
         ],
         "thread_name": "WMC201 - SU - 2024 - 2"
       }
+    ],
+    "SWE202C": [
+      {
+        "thread_url": "https://fuoverflow.com/threads/swe202c-sp26-fe.6392/",
+        "questions": [
+          {
+            "id": "126223",
+            "image_url": "https://fuoverflow.com/media/q1-jpg.126223/full/",
+            "answer": "ABD"
+          },
+          {
+            "id": "126243",
+            "image_url": "https://fuoverflow.com/media/q21-jpg.126243/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126244",
+            "image_url": "https://fuoverflow.com/media/q22-jpg.126244/full/",
+            "answer": "ABC"
+          },
+          {
+            "id": "126245",
+            "image_url": "https://fuoverflow.com/media/q23-jpg.126245/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126246",
+            "image_url": "https://fuoverflow.com/media/q24-jpg.126246/full/",
+            "answer": "ABC"
+          },
+          {
+            "id": "126247",
+            "image_url": "https://fuoverflow.com/media/q25-jpg.126247/full/",
+            "answer": "ABD"
+          },
+          {
+            "id": "126248",
+            "image_url": "https://fuoverflow.com/media/q26-jpg.126248/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126249",
+            "image_url": "https://fuoverflow.com/media/q27-jpg.126249/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126250",
+            "image_url": "https://fuoverflow.com/media/q28-jpg.126250/full/",
+            "answer": "ACD"
+          },
+          {
+            "id": "126251",
+            "image_url": "https://fuoverflow.com/media/q29-jpg.126251/full/",
+            "answer": "AB"
+          },
+          {
+            "id": "126252",
+            "image_url": "https://fuoverflow.com/media/q30-jpg.126252/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126253",
+            "image_url": "https://fuoverflow.com/media/q31-jpg.126253/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126254",
+            "image_url": "https://fuoverflow.com/media/q32-jpg.126254/full/",
+            "answer": "B"
+          },
+          {
+            "id": "126225",
+            "image_url": "https://fuoverflow.com/media/q3-jpg.126225/full/",
+            "answer": "B"
+          },
+          {
+            "id": "126238",
+            "image_url": "https://fuoverflow.com/media/q16-jpg.126238/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126255",
+            "image_url": "https://fuoverflow.com/media/q33-jpg.126255/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126240",
+            "image_url": "https://fuoverflow.com/media/q18-jpg.126240/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126232",
+            "image_url": "https://fuoverflow.com/media/q10-jpg.126232/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126236",
+            "image_url": "https://fuoverflow.com/media/q14-jpg.126236/full/",
+            "answer": "C"
+          },
+          {
+            "id": "126230",
+            "image_url": "https://fuoverflow.com/media/q8-jpg.126230/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126226",
+            "image_url": "https://fuoverflow.com/media/q4-jpg.126226/full/",
+            "answer": "ABC"
+          },
+          {
+            "id": "126229",
+            "image_url": "https://fuoverflow.com/media/q7-jpg.126229/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126235",
+            "image_url": "https://fuoverflow.com/media/q13-jpg.126235/full/",
+            "answer": "AC"
+          },
+          {
+            "id": "126234",
+            "image_url": "https://fuoverflow.com/media/q12-jpg.126234/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126256",
+            "image_url": "https://fuoverflow.com/media/q34-jpg.126256/full/",
+            "answer": "B"
+          },
+          {
+            "id": "126227",
+            "image_url": "https://fuoverflow.com/media/q5-jpg.126227/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126231",
+            "image_url": "https://fuoverflow.com/media/q9-jpg.126231/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126228",
+            "image_url": "https://fuoverflow.com/media/q6-jpg.126228/full/",
+            "answer": "ABD"
+          },
+          {
+            "id": "126239",
+            "image_url": "https://fuoverflow.com/media/q17-jpg.126239/full/",
+            "answer": "ABC"
+          },
+          {
+            "id": "126257",
+            "image_url": "https://fuoverflow.com/media/q35-jpg.126257/full/",
+            "answer": "ABD"
+          },
+          {
+            "id": "126261",
+            "image_url": "https://fuoverflow.com/media/q39-jpg.126261/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126260",
+            "image_url": "https://fuoverflow.com/media/q38-jpg.126260/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126258",
+            "image_url": "https://fuoverflow.com/media/q36-jpg.126258/full/",
+            "answer": "ABD"
+          },
+          {
+            "id": "126259",
+            "image_url": "https://fuoverflow.com/media/q37-jpg.126259/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126262",
+            "image_url": "https://fuoverflow.com/media/q40-jpg.126262/full/",
+            "answer": "ABC"
+          },
+          {
+            "id": "126270",
+            "image_url": "https://fuoverflow.com/media/q48-jpg.126270/full/",
+            "answer": "ABD"
+          },
+          {
+            "id": "126269",
+            "image_url": "https://fuoverflow.com/media/q47-jpg.126269/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126237",
+            "image_url": "https://fuoverflow.com/media/q15-jpg.126237/full/",
+            "answer": "ABC"
+          },
+          {
+            "id": "126272",
+            "image_url": "https://fuoverflow.com/media/q50-jpg.126272/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126264",
+            "image_url": "https://fuoverflow.com/media/q42-jpg.126264/full/",
+            "answer": "ABC"
+          },
+          {
+            "id": "126266",
+            "image_url": "https://fuoverflow.com/media/q44-jpg.126266/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126265",
+            "image_url": "https://fuoverflow.com/media/q43-jpg.126265/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126263",
+            "image_url": "https://fuoverflow.com/media/q41-jpg.126263/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126267",
+            "image_url": "https://fuoverflow.com/media/q45-jpg.126267/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126271",
+            "image_url": "https://fuoverflow.com/media/q49-jpg.126271/full/",
+            "answer": "AB"
+          },
+          {
+            "id": "126268",
+            "image_url": "https://fuoverflow.com/media/q46-jpg.126268/full/",
+            "answer": "ABD"
+          },
+          {
+            "id": "126224",
+            "image_url": "https://fuoverflow.com/media/q2-jpg.126224/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126233",
+            "image_url": "https://fuoverflow.com/media/q11-jpg.126233/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126241",
+            "image_url": "https://fuoverflow.com/media/q19-jpg.126241/full/",
+            "answer": "A"
+          },
+          {
+            "id": "126242",
+            "image_url": "https://fuoverflow.com/media/q20-jpg.126242/full/",
+            "answer": "ABC"
+          }
+        ],
+        "thread_name": "SWE202C - SP26 - FE"
+      }
     ]
   },
   "5": {
